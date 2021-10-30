@@ -1,0 +1,17 @@
+{
+	"title" :	"[SCP] Enhanced SCP-096",
+	"type"  :	"weapon",
+	"tags"  :	["realism","roleplay"],
+	"ignore":
+	[
+		"*.cmd",
+		"*.ini",
+		"*.lnk",
+		"*.url",
+		"vkx_scp_096.jpg",
+		"vkx_scp_096.png",
+		"*.xcf",
+		"*.code-workspace",
+		"*.md"
+	]
+}
