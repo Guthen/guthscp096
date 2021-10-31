@@ -4,20 +4,20 @@ Watch the [Trailer Video](https://youtu.be/5fAdBu-0r0A)!
 
 ## Features
 + **System**: 
-    + **Enrages** when a non-SCP player have SCP-096 face on his "screen" ([possible incorrect results](#known-issues))
-    + **Unrages** when all his targets are killed ─ or, if you enabled `Unrage on Time` option, when the enrage time runs out
+    + **Enrages** when a non-SCP player has SCP-096's face on his "screen" ([possible incorrect results](#known-issues))
+    + **Calms down** when all his targets are killed ─ or, if you enabled `Unrage on Time` option, when the enrage time runs out
     + Configurable **Sound** paths & hear distance
     + Configurable **Movement Speed** bonus while enraged
     + Configurable **Screen Shake** while near of an enraged SCP-096
     + *(fun) Allow multiple SCP-096 instances*
 + **SWEP**:
     + **Class**: `vkx_scp_096`
-    + **Left Mouse Button**: while enraged, **kill your targets** or **break the looked entity**
+    + **Left Mouse Button**: while enraged, **kill your targets** or **break the looking entity**
     + **Right Mouse Button** to cover your hands on your face ─ unfortunately, it's not visible for other players
     + (optional & configurable) [Keycard System](https://steamcommunity.com/sharedfiles/filedetails/?id=1781514401) custom access
 + Configurable in-game with [[SCP] Guthen's Addons Base](https://steamcommunity.com/sharedfiles/filedetails/?id=2139692777) (`guthscpbase` in your console)
 + Can **break doors and props** with a single left click while enraged
-+ **Compatible every gamemodes**
++ **Compatible with every gamemodes**
 
 ## Convars
 + `vkx_scp096_render_path_finding <0 or 1>`: Render path toward targets as SCP-096. It's a rudimentary method, it's not 100% relatable.
