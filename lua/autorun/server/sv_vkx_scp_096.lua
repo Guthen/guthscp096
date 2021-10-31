@@ -82,13 +82,19 @@ function GuthSCP.unrageSCP096( ply, no_sound )
     end
 
     local weap = ply:GetWeapon( "vkx_scp_096" )
-    if IsValid( weap ) then ply:SetActiveWeapon( weap ) end
-    timer.Simple( 1, function()
-        if IsValid( weap ) then
-            weap:SetNextSecondaryFire( CurTime() - 1 )
-            weap:SecondaryAttack()
-        end
-    end )
+    --  select weapon
+    if IsValid( weap ) then 
+        timer.Simple( .5, function()
+            if not IsValid( weap ) then return end
+            ply:SetActiveWeapon( weap )
+
+            --  cover the head
+            timer.Simple( .1, function()
+                if not IsValid( weap ) then return end
+                weap:SecondaryAttack()
+            end )
+        end )
+    end
 
     --  unset values
     ply:Freeze( false )
