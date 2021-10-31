@@ -34,7 +34,7 @@ Other than that, the method used is choose to be secure, an other solution (= cl
 *Pro Tip: When SCP-096 is near, look as low/high to the floor/ceiling as you can*
 
 ## Legal Terms
-This addon is licensed under [Creative Commons Sharealike 3.0](https://creativecommons.org/licenses/by-sa/3.0/) and is based on [SCP-173](http://scp-wiki.wikidot.com/scp-173) by "Moto42".
+This addon is licensed under [Creative Commons Sharealike 3.0](https://creativecommons.org/licenses/by-sa/3.0/) and is based on [SCP-173](http://scp-wiki.wikidot.com/scp-173) by "Moto42". The weapon's view model is not mine and is made by [Vinrax](https://steamcommunity.com/id/vinrax ).
 
 If you create something derived from this, please credit me (you can also tell me about what you've done).
 
