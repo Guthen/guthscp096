@@ -56,6 +56,7 @@ function GuthSCP.enrageSCP096( ply )
         end
     end )
 
+    GuthSCP.debugPrint( "VKX SCP 096", "%s has been enraged", ply:GetName() )
     return true
 end
 
@@ -109,6 +110,8 @@ function GuthSCP.unrageSCP096( ply, no_sound )
         net.Start( "vkxscp096:target" )
         net.Send( ply )
     end
+
+    GuthSCP.debugPrint( "VKX SCP 096", "%s has been unraged", ply:GetName() )
 end
 
 --  target
@@ -120,6 +123,8 @@ function GuthSCP.addSCP096Target( target, ply )
         net.WriteEntity( target )
         net.WriteBool( true )
     net.Send( ply )
+
+    GuthSCP.debugPrint( "VKX SCP 096", "%s has been added to %s's targets. %d targets remaining.", target:GetName(), ply:GetName(), #triggered_scps[ply].targets_keys )
 end
 
 function GuthSCP.removeSCP096Target( target, ply )
@@ -130,6 +135,8 @@ function GuthSCP.removeSCP096Target( target, ply )
         net.WriteEntity( target )
         net.WriteBool( false )
     net.Send( ply )
+
+    GuthSCP.debugPrint( "VKX SCP 096", "%s has been removed from %s's targets. %d targets remaining.", target:GetName(), ply:GetName(), #triggered_scps[ply].targets_keys )
 
     --  unrage 096 when there is no remaining target
     if #triggered_scps[ply].targets_keys == 0 then
@@ -164,6 +171,8 @@ function GuthSCP.triggerSCP096( target, ply )
             triggered_scps[ply].looked_sound_cooldown = CurTime()
         end
     end
+
+    GuthSCP.debugPrint( "VKX SCP 096", "%s triggered %s", target:GetName(), ply:GetName() )
 
     if not triggered_scps[ply] then
         GuthSCP.enrageSCP096( ply )
@@ -227,14 +236,14 @@ end )
 
 --  unrage
 hook.Add( "OnPlayerChangedTeam", "vkxscp096:reset", function( ply, old_team, new_team )
-    if GuthSCP.Config.guthscpbase.scp_teams[old_team] then
+    if GuthSCP.isSCP096( ply ) then
         GuthSCP.unrageSCP096( ply, true )
     end
 end )
 
 hook.Add( "DoPlayerDeath", "vkxscp096:reset", function( ply, attacker, dmg_info )
     if GuthSCP.isSCP096( ply ) then 
-        GuthSCP.unrageSCP096( ply )
+        GuthSCP.unrageSCP096( ply, true )
     else
         --  remove target when dead
         --local is_target = false
