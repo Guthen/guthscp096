@@ -27,8 +27,6 @@ SWEP.SlotPos				= 1
 SWEP.DrawAmmo				= false
 SWEP.DrawCrosshair			= false
 
-SWEP.HoldType 				= "passive"
-
 SWEP.ViewModel				= "models/weapons/v_arms_scp096.mdl"
 SWEP.WorldModel				= ""
 
@@ -55,6 +53,10 @@ function SWEP:PrimaryAttack()
             self:SetNextPrimaryFire( CurTime() + .5 )
         end  
     end
+end
+
+function SWEP:Initialize()
+    self:SetHoldType( "normal" )
 end
 
 if SERVER then
