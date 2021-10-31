@@ -7,15 +7,18 @@ local targets, targets_keys = {}, {}
 
 net.Receive( "vkxscp096:target", function()
     local ply = net.ReadEntity()
+    --  add target
     if IsValid( ply ) then
         targets[ply] = net.ReadBool() or nil
         ply.scp_096_path = { ply:GetPos() }
+
+        targets_keys = table.GetKeys( targets )
+    --  clear targets
     else
         for i, v in ipairs( targets_keys ) do v.scp_096_path = nil end
-        targets = {}
+        targets, targets_keys = {}, {}
     end
 
-    targets_keys = table.GetKeys( targets )
 end )
 
 function GuthSCP.getSCP096Targets()
@@ -128,11 +131,3 @@ hook.Add( "HUDPaint", "zzz_vkxscp096:rage", function()
     DrawSharpen( 1, 1.2 * ( 1 - factor ) * scale )
     DrawMotionBlur( .4, 1 * scale * factor, .02 )
 end )
-
---  test
---[[ hook.Remove( "HUDPaint", "Guthen:CelesteHUD" )
-hook.Remove("HUDPaint", "FPP_HUDPaint")
-hook.Add( "HUDShouldDraw", "no", function( name )
-    if name == "DarkRP_EntityDisplay" or name == "CHudDeathNotice" then return false end
-end )
-function notification.AddLegacy() end ]]
