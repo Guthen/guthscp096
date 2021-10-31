@@ -26,12 +26,20 @@ Watch the [Trailer Video](https://youtu.be/5fAdBu-0r0A)!
 + `vkx_scp096_render_targets_line <0 or 1>`: Render a line between you and the SCP-096 targets 
 
 ## Known Issues
-### "I enrage SCP-096 even though I didn't looked at him"
+### "I enrage SCP-096 even though I didn't looked at him!"
 The detection system is far from being perfect as you can tell. 
 
 Other than that, the method used is choose to be secure, an other solution (= client check 096's head on his screen and send whenever or not he should enrage him to the server) might gives better (or even perfect) results but will open the doors to cheats (just by not sending the message to the server), so for the moment we have the secure and weak option.
 
 *Pro Tip: When SCP-096 is near, look as low/high to the floor/ceiling as you can*
+
+### "The addon doesn't work!"
+Be sure to have installed [[SCP] Guthen's Addons Base](https://steamcommunity.com/sharedfiles/filedetails/?id=2139692777) on your server. Verify that you can open the configuration menu with `guthscpbase` in your game console.
+
+### "I can't hear the sounds!"
+Be sure to have installed [Guthen SCP Content](https://steamcommunity.com/workshop/filedetails/?id=1673048305) on your client.
+
+Otherwise, check the configured sounds paths in the configuration menu. 
 
 ## Legal Terms
 This addon is licensed under [Creative Commons Sharealike 3.0](https://creativecommons.org/licenses/by-sa/3.0/) and is based on [SCP-173](http://scp-wiki.wikidot.com/scp-173) by "Moto42". The weapon's view model is not mine and is made by [Vinrax](https://steamcommunity.com/id/vinrax ).
