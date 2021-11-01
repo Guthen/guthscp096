@@ -45,7 +45,7 @@ Otherwise, check the configured sounds paths in the configuration menu.
 You are not limited to a particular Player Model but if you want a good one, try [this](https://steamcommunity.com/sharedfiles/filedetails/?id=958509894) one. 
 
 ## Legal Terms
-This addon is licensed under [Creative Commons Sharealike 3.0](https://creativecommons.org/licenses/by-sa/3.0/) and is based on [SCP-173](http://scp-wiki.wikidot.com/scp-173) by "Moto42". The weapon's view model is not mine and is made by [Vinrax](https://steamcommunity.com/id/vinrax ).
+This addon is licensed under [Creative Commons Sharealike 3.0](https://creativecommons.org/licenses/by-sa/3.0/) and is based on [SCP-096](http://scp-wiki.wikidot.com/scp-096). The weapon's view model is not mine and is made by [Vinrax](https://steamcommunity.com/id/vinrax ).
 
 If you create something derived from this, please credit me (you can also tell me about what you've done).
 
