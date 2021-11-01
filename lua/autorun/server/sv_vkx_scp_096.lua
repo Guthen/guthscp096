@@ -44,8 +44,11 @@ function GuthSCP.enrageSCP096( ply )
 
     timer.Create( "VKX:Triggering096" .. ply:AccountID(), GuthSCP.Config.vkxscp096.trigger_time, 1, function()
         ply:Freeze( false )
+
+        --  stop trigger sound
+        GuthSCP.stopSound( ply, GuthSCP.Config.vkxscp096.sound_trigger )
         
-        --  play sound
+        --  play enrage sound
         GuthSCP.playSound( ply, GuthSCP.Config.vkxscp096.sound_enrage, GuthSCP.Config.vkxscp096.sound_hear_distance, true )
 
         --  unrage
@@ -152,13 +155,48 @@ function GuthSCP.getSCP096Targets( ply )
     return triggered_scps[ply] and triggered_scps[ply].targets_keys
 end
 
+local scps_096 = {}
 function GuthSCP.getSCP096s()
-    return team.GetPlayers( GuthSCP.Config.vkxscp096.team )
+    return scps_096
 end
+
+--  refresh scps list at a fixed interval
+local function refresh_scps_list()
+    scps_096 = {}
+    for i, v in ipairs( player.GetAll() ) do
+        if GuthSCP.isSCP096( v ) then
+            scps_096[#scps_096 + 1] = v
+        end
+    end
+end
+--timer.Create( "vkxscp096:add_scp", 10, 0, refresh_scps_list )
+
+hook.Add( "WeaponEquip", "vkxscp096:add_scp", function( weapon, ply )
+    if not ( weapon:GetClass() == "vkx_scp_096" ) then return end
+    if GuthSCP.isSCP096( ply ) then return end
+
+    scps_096[#scps_096 + 1] = ply
+    GuthSCP.debugPrint( "VKX SCP 096", "%s is a new SCP-096 instance", ply:GetName() )
+end )
+
+concommand.Add( "vkx_scp096_print_scps", function( ply )
+    local text = ""
+
+    for i, v in ipairs( scps_096 ) do
+        text = text .. ( "%d: %s\n" ):format( i, v:GetName() )
+    end
+    
+    if IsValid( ply ) then
+        ply:PrintMessage( HUD_PRINTCONSOLE, text )
+    else
+        print( text )
+    end
+end )
 
 --  trigger
 function GuthSCP.triggerSCP096( target, ply )
     if target == ply then return end
+    if not GuthSCP.isSCP096( ply ) then return end
     if GuthSCP.isSCP096Target( target, ply ) then return end
 
     local should = hook.Run( "vkxscp096:should_trigger", target, ply )
@@ -186,12 +224,17 @@ end
 local red, green = Color( 255, 0, 0 ), Color( 0, 255, 0 )
 local head_bone = "ValveBiped.Bip01_Head1"
 hook.Add( "Think", "vkxscp096:trigger", function()
-    local scps_096 = GuthSCP.getSCP096s()
     if #scps_096 == 0 then return end
 
     for i, ply in ipairs( player.GetAll() ) do
         if ply:Alive() and ( not GuthSCP.Config.vkxscp096.ignore_scps or not GuthSCP.isSCP( ply ) ) then
             for i, scp in ipairs( scps_096 ) do
+                if not GuthSCP.isSCP096( scp ) then
+                    table.remove( scps_096, i )
+
+                    GuthSCP.debugPrint( "VKX SCP 096", "%s is no more a SCP-096 instance", scp:GetName() )
+                    continue
+                end
                 if not scp:Alive() or GuthSCP.isSCP096Target( ply, scp ) then continue end
 
                 --  bones
@@ -246,13 +289,9 @@ hook.Add( "DoPlayerDeath", "vkxscp096:reset", function( ply, attacker, dmg_info 
         GuthSCP.unrageSCP096( ply, true )
     else
         --  remove target when dead
-        --local is_target = false
-        for i, v in ipairs( GuthSCP.getSCPs() ) do
-            if GuthSCP.isSCP096( v ) then
-                if GuthSCP.isSCP096Target( ply, v ) then
-                    GuthSCP.removeSCP096Target( ply, v )
-                    --is_target = true
-                end
+        for i, v in ipairs( scps_096 ) do
+            if GuthSCP.isSCP096Target( ply, v ) then
+                GuthSCP.removeSCP096Target( ply, v )
             end
         end
     end
