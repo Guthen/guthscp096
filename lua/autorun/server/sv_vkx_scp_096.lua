@@ -163,13 +163,15 @@ end
 --  refresh scps list at a fixed interval
 local function refresh_scps_list()
     scps_096 = {}
+
     for i, v in ipairs( player.GetAll() ) do
         if GuthSCP.isSCP096( v ) then
             scps_096[#scps_096 + 1] = v
         end
     end
+
+    GuthSCP.debugPrint( "VKX SCP 096", "SCPs cache has been updated" )
 end
---timer.Create( "vkxscp096:add_scp", 10, 0, refresh_scps_list )
 
 hook.Add( "WeaponEquip", "vkxscp096:add_scp", function( weapon, ply )
     if not ( weapon:GetClass() == "vkx_scp_096" ) then return end
@@ -237,15 +239,19 @@ local head_bone = "ValveBiped.Bip01_Head1"
 hook.Add( "Think", "vkxscp096:trigger", function()
     if #scps_096 == 0 then return end
 
+    local list_refreshed = false
     for i, ply in ipairs( player.GetAll() ) do
-        if ply:Alive() and ( not GuthSCP.Config.vkxscp096.ignore_scps or not GuthSCP.isSCP( ply ) ) then
+        if ply:Alive() and ( not GuthSCP.Config.vkxscp096.ignore_scps or not GuthSCP.isSCP( ply ) ) and not GuthSCP.isSCP096( ply ) then
             for i, scp in ipairs( scps_096 ) do
-                if not GuthSCP.isSCP096( scp ) then
-                    table.remove( scps_096, i )
-
-                    GuthSCP.debugPrint( "VKX SCP 096", "%s is no more a SCP-096 instance", scp:GetName() )
+                --  remove invalid scps (e.g.: disconnected, team changed)
+                if not IsValid( scp ) or not GuthSCP.isSCP096( scp ) then
+                    if not list_refreshed then
+                        refresh_scps_list()
+                        list_refreshed = true
+                    end
                     continue
                 end
+
                 if not scp:Alive() or GuthSCP.isSCP096Target( ply, scp ) then continue end
 
                 --  bones
