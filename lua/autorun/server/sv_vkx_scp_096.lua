@@ -173,8 +173,15 @@ end
 
 hook.Add( "WeaponEquip", "vkxscp096:add_scp", function( weapon, ply )
     if not ( weapon:GetClass() == "vkx_scp_096" ) then return end
-    if GuthSCP.isSCP096( ply ) then return end
 
+    --  is in list
+    for i, v in ipairs( scps_096 ) do
+        if v == ply then 
+            return
+        end
+    end
+
+    --  add in the list
     scps_096[#scps_096 + 1] = ply
     GuthSCP.debugPrint( "VKX SCP 096", "%s is a new SCP-096 instance", ply:GetName() )
 end )
@@ -182,8 +189,12 @@ end )
 concommand.Add( "vkx_scp096_print_scps", function( ply )
     local text = ""
 
-    for i, v in ipairs( scps_096 ) do
-        text = text .. ( "%d: %s\n" ):format( i, v:GetName() )
+    if #scps_096 == 0 then
+        text = "No SCP-096 instances found"
+    else
+        for i, v in ipairs( scps_096 ) do
+            text = text .. ( "%d: %s\n" ):format( i, v:GetName() )
+        end
     end
     
     if IsValid( ply ) then
