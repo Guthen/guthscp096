@@ -2,6 +2,13 @@
 
 Watch the [Trailer Video](https://youtu.be/5fAdBu-0r0A)!
 
+## Steam Workshop
+![Steam Views](https://img.shields.io/steam/views/2641523360?color=red&style=for-the-badge)
+![Steam Downloads](https://img.shields.io/steam/downloads/2641523360?color=red&style=for-the-badge)
+![Steam Favorites](https://img.shields.io/steam/favorites/2641523360?color=red&style=for-the-badge)
+
+This addon is available on the Workshop [here](https://steamcommunity.com/sharedfiles/filedetails/?id=2641523360)!
+
 ## Features
 + **System**: 
     + **Enrages** when a non-SCP player has SCP-096's face on his "screen" ([possible incorrect results](#known-issues))
