@@ -1,5 +1,4 @@
 # [SCP] Enhanced SCP-096
-
 Watch the [Trailer Video](https://youtu.be/5fAdBu-0r0A)!
 
 ## Steam Workshop
@@ -25,6 +24,8 @@ This addon is available on the Workshop [here](https://steamcommunity.com/shared
 + Configurable in-game with [[SCP] Guthen's Addons Base](https://steamcommunity.com/sharedfiles/filedetails/?id=2139692777) (`guthscpbase` in your console)
 + Can **break doors and props** with a single left click while enraged
 + **Compatible with every gamemodes**
++ **Compatible with addons:**
+    + [Ultimate gMedic](https://www.gmodstore.com/market/view/ultimate-gmedic)
 
 ## Convars
 + `vkx_scp096_render_path_finding <0 or 1>`: Render path toward targets as SCP-096. It's a rudimentary method, it's not 100% relatable.
@@ -33,15 +34,15 @@ This addon is available on the Workshop [here](https://steamcommunity.com/shared
 + `vkx_scp096_render_targets_line <0 or 1>`: Render a line between you and the SCP-096 targets 
 
 ## Known Issues
+### "The addon doesn't work!"
+Be sure to have installed [[SCP] Guthen's Addons Base](https://steamcommunity.com/sharedfiles/filedetails/?id=2139692777) on your server. Verify that you can open the configuration menu with `guthscpbase` in your game console.
+
 ### "I enrage SCP-096 even though I didn't looked at him!"
 The detection system is far from being perfect as you can tell. 
 
 Other than that, the method used is choose to be secure, an other solution (= client check 096's head on his screen and send whenever or not he should enrage him to the server) might gives better (or even perfect) results but will open the doors to cheats (just by not sending the message to the server), so for the moment we have the secure and weak option.
 
 *Pro Tip: When SCP-096 is near, look as low/high to the floor/ceiling as you can*
-
-### "The addon doesn't work!"
-Be sure to have installed [[SCP] Guthen's Addons Base](https://steamcommunity.com/sharedfiles/filedetails/?id=2139692777) on your server. Verify that you can open the configuration menu with `guthscpbase` in your game console.
 
 ### "I can't hear the sounds!"
 Be sure to have installed [Guthen SCP Content](https://steamcommunity.com/workshop/filedetails/?id=1673048305) on your client.
