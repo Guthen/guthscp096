@@ -147,6 +147,14 @@ function GuthSCP.removeSCP096Target( target, ply )
     end
 end
 
+function GuthSCP.removeFromSCP096Targets( ply )
+    for i, v in ipairs( GuthSCP.getSCP096s() ) do
+        if GuthSCP.isSCP096Target( ply, v ) then
+            GuthSCP.removeSCP096Target( ply, v )
+        end
+    end
+end
+
 function GuthSCP.isSCP096Target( target, ply )
     return triggered_scps[ply] and triggered_scps[ply].targets[target]
 end
@@ -305,14 +313,23 @@ hook.Add( "DoPlayerDeath", "vkxscp096:reset", function( ply, attacker, dmg_info 
     if GuthSCP.isSCP096( ply ) then 
         GuthSCP.unrageSCP096( ply, true )
     else
-        --  remove target when dead
-        for i, v in ipairs( scps_096 ) do
-            if GuthSCP.isSCP096Target( ply, v ) then
-                GuthSCP.removeSCP096Target( ply, v )
-            end
-        end
+        GuthSCP.removeFromSCP096Targets( ply )
     end
 end )
+
+--  gMedic Compatibility (https://www.gmodstore.com/market/view/ultimate-gmedic)
+if MedConfig then
+    hook.Add( "OnEntityCreated", "vkxscp096:reset", function( ent )
+        if not ( ent:GetClass() == "sent_death_ragdoll" ) then return end
+
+        timer.Simple( 0, function()
+            local ply = ent:GetOwner()
+            if not IsValid( ply ) or not ply:IsPlayer() then return end
+            
+            GuthSCP.removeFromSCP096Targets( ply )
+        end )
+    end )
+end
 
 hook.Add( "PlayerShouldTakeDamage", "vkxscp096:invinsible", function( ply, attacker )
     if GuthSCP.isSCP096( ply ) and GuthSCP.Config.vkxscp096.immortal then
