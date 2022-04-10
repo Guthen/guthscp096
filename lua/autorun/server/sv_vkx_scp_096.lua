@@ -357,7 +357,7 @@ hook.Add( "PlayerFootstep", "vkxscp096:footstep", function( ply, pos, foot, soun
 end )
 
 hook.Add( "vkxscp096:should_trigger", "vkxscp096:ignore_teams", function( target, ply )
-	if GuthSCP.Config.vkxscp096.ignore_teams[target:Team()] then
+	if GuthSCP.Config.vkxscp096.ignore_teams[GuthSCP.getTeamKeyname( target:Team() )] then
 		return false
 	end
 end )

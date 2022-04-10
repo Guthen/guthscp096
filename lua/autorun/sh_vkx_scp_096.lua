@@ -29,8 +29,7 @@ hook.Add( "guthscpbase:config", "vkxscp096", function()
 						type = "Category",
 						name = "General",
 					},
-					GuthSCP.createTeamsConfigElement( {
-						type = "ComboBox",
+					GuthSCP.createTeamConfigElement( {
 						name = "SCP-096 Team",
 						id = "team",
 						default = "TEAM_SCP096",
@@ -183,32 +182,16 @@ hook.Add( "guthscpbase:config", "vkxscp096", function()
 			},
 		},
 		receive = function( form )
-			local teams = {}
+			form.ignore_teams = GuthSCP.receiveTeamsConfig( form.ignore_teams )
 
-			for i, id in ipairs( form.ignore_teams ) do
-				teams[id] = true
-			end
-
-			form.ignore_teams = teams
 			GuthSCP.applyConfig( "vkxscp096", form, {
 				network = true,
 				save = true,
 			} )
 		end,
 		parse = function( form )
-			local teams = {}
-
-			for k, v in pairs( team.GetAllTeams() ) do
-				if not v.Joinable then continue end
-				if not form.ignore_teams[v.Name] and not form.ignore_teams[k] then continue end
-
-				teams[k] = true
-			end
-
-			form.ignore_teams = teams
-			if isstring( form.team ) then
-				form.team = _G[form.team]
-			end
+			form.ignore_teams = GuthSCP.parseTeamsConfig( form.ignore_teams )
+			form.team = GuthSCP.parseTeamConfig( form.team )
 		end,
 	} )
 
