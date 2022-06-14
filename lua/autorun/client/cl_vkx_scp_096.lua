@@ -28,7 +28,7 @@ end
 --  render
 local render_halo = CreateClientConVar( "vkx_scp096_render_targets_halo", "1", true, false, "Render a halo on the SCP-096 targets, more expensive than a line" )
 local render_line = CreateClientConVar( "vkx_scp096_render_targets_line", "0", true, false, "Render a line between you and the SCP-096 targets" )
-local render_pp = CreateClientConVar( "vkx_scp096_render_post_process", "1", true, false, "Render post process effects as SCP-096" )
+local render_pp = CreateClientConVar( "vkx_scp096_render_post_process", "1", true, false, "Render post process effects as SCP-096, really expensive on performance but damn cool" )
 local render_pathfinding = CreateClientConVar( "vkx_scp096_render_path_finding", "0", true, false, "Render path toward targets as SCP-096. It's a rudimentary method, it's not 100% relatable." )
 
 local indicator_color = Color( 220, 62, 62 )

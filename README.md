@@ -28,10 +28,10 @@ This addon is available on the Workshop [here](https://steamcommunity.com/shared
     + [Ultimate gMedic](https://www.gmodstore.com/market/view/ultimate-gmedic)
 
 ## Convars
-+ `vkx_scp096_render_path_finding <0 or 1>`: Render path toward targets as SCP-096. It's a rudimentary method, it's not 100% relatable.
-+ `vkx_scp096_render_post_process <0 or 1>`: Render post process effects as SCP-096
 + `vkx_scp096_render_targets_halo <0 or 1>`: Render a halo on the SCP-096 targets, more expensive than a line
 + `vkx_scp096_render_targets_line <0 or 1>`: Render a line between you and the SCP-096 targets 
++ `vkx_scp096_render_post_process <0 or 1>`: Render post process effects as SCP-096, really expensive on performance but damn cool
++ `vkx_scp096_render_path_finding <0 or 1>`: Render path toward targets as SCP-096. It's a rudimentary method, it's not 100% relatable.
 
 ## Known Issues
 ### "The addon doesn't work!"
