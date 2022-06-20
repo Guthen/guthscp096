@@ -43,16 +43,13 @@ function SWEP:PrimaryAttack()
 	if GuthSCP.isSCP096Enraged( ply ) then
 		if target:IsPlayer() and target:GetPos():DistToSqr( ply:GetPos() ) <= dist_sqr and GuthSCP.isSCP096Target( target, ply ) then
 			target:TakeDamage( 500, ply, self )
-			self:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
-
-			self:SetNextPrimaryFire( CurTime() + .5 )
 		elseif tr.HitPos:DistToSqr( ply:GetPos() ) <= dist_sqr then
 			GuthSCP.breakEntitiesAtPlayerTrace( tr )
-			self:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
-
-			self:SetNextPrimaryFire( CurTime() + .5 )
 		end
 	end
+
+	self:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
+	self:SetNextPrimaryFire( CurTime() + .3 )
 end
 
 function SWEP:Initialize()
