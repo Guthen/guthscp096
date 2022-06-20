@@ -40,14 +40,17 @@ function SWEP:PrimaryAttack()
 	local ply = self:GetOwner()
 	local tr = ply:GetEyeTrace()
 	local target = tr.Entity
-	if GuthSCP.isSCP096Enraged( ply ) then
-		if target:IsPlayer() and target:GetPos():DistToSqr( ply:GetPos() ) <= dist_sqr and GuthSCP.isSCP096Target( target, ply ) then
-			target:TakeDamage( 500, ply, self )
-		elseif tr.HitPos:DistToSqr( ply:GetPos() ) <= dist_sqr then
-			GuthSCP.breakEntitiesAtPlayerTrace( tr )
-		end
-	end
+	if not GuthSCP.isSCP096Enraged( ply ) then return end
 
+	--  kill target
+	if target:IsPlayer() and target:GetPos():DistToSqr( ply:GetPos() ) <= dist_sqr and GuthSCP.isSCP096Target( target, ply ) then
+		target:TakeDamage( 500, ply, self )
+	--  destroy entities
+	elseif tr.HitPos:DistToSqr( ply:GetPos() ) <= dist_sqr then
+		GuthSCP.breakEntitiesAtPlayerTrace( tr )
+	end
+	
+	--  attack anim
 	self:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
 	self:SetNextPrimaryFire( CurTime() + .3 )
 end
