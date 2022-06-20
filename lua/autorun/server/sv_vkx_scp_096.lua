@@ -2,7 +2,9 @@ if not GuthSCP or not GuthSCP.Config then
 	return
 end
 
+util.AddNetworkString( "vkxscp096:refresh_list" )
 util.AddNetworkString( "vkxscp096:target" )
+util.AddNetworkString( "vkxscp096:trigger" )
 
 --  enrage
 local triggered_scps = {}
@@ -43,10 +45,13 @@ function GuthSCP.enrageSCP096( ply )
 	end
 
 	timer.Create( "VKX:Triggering096" .. ply:AccountID(), GuthSCP.Config.vkxscp096.trigger_time, 1, function()
+		if not IsValid( ply ) or not GuthSCP.isSCP096( ply ) then return end
 		ply:Freeze( false )
 
 		--  stop trigger sound
-		GuthSCP.stopSound( ply, GuthSCP.Config.vkxscp096.sound_trigger )
+		if GuthSCP.Config.vkxscp096.sound_stop_trigger_sound then
+			GuthSCP.stopSound( ply, GuthSCP.Config.vkxscp096.sound_trigger )
+		end
 		
 		--  play enrage sound
 		GuthSCP.playSound( ply, GuthSCP.Config.vkxscp096.sound_enrage, GuthSCP.Config.vkxscp096.sound_hear_distance, true )
@@ -54,6 +59,7 @@ function GuthSCP.enrageSCP096( ply )
 		--  unrage
 		if GuthSCP.Config.vkxscp096.unrage_on_time then
 			timer.Create( "VKX:Idling096" .. ply:AccountID(), GuthSCP.Config.vkxscp096.enrage_time, 1, function()
+				if not IsValid( ply ) or not GuthSCP.isSCP096( ply ) then return end
 				GuthSCP.unrageSCP096( ply )
 			end )
 		end
@@ -61,6 +67,34 @@ function GuthSCP.enrageSCP096( ply )
 
 	GuthSCP.debugPrint( "VKX SCP 096", "%s has been enraged", ply:GetName() )
 	return true
+end
+
+
+--  trigger
+function GuthSCP.triggerSCP096( target, ply )
+	if target == ply then return end
+	if not GuthSCP.isSCP096( ply ) then return end
+	if GuthSCP.isSCP096Target( target, ply ) then return end
+
+	local should = hook.Run( "vkxscp096:should_trigger", target, ply )
+	if should == false then return end
+
+	GuthSCP.playClientSound( target, GuthSCP.Config.vkxscp096.sound_looked )
+	if CurTime() - ( triggered_scps[ply] and triggered_scps[ply].looked_sound_cooldown or 1 ) > .5 then
+		GuthSCP.playClientSound( ply, GuthSCP.Config.vkxscp096.sound_looked )
+		if triggered_scps[ply] then
+			triggered_scps[ply].looked_sound_cooldown = CurTime()
+		end
+	end
+
+	GuthSCP.debugPrint( "VKX SCP 096", "%s triggered %s", target:GetName(), ply:GetName() )
+
+	if not triggered_scps[ply] then
+		GuthSCP.enrageSCP096( ply )
+	end
+
+	--  add target
+	GuthSCP.addSCP096Target( target, ply )
 end
 
 --  sounds
@@ -85,8 +119,8 @@ function GuthSCP.unrageSCP096( ply, no_sound )
 		end )
 	end
 
-	local weap = ply:GetWeapon( "vkx_scp_096" )
 	--  select weapon
+	local weap = ply:GetWeapon( "vkx_scp_096" )
 	if IsValid( weap ) then 
 		timer.Simple( .5, function()
 			if not IsValid( weap ) then return end
@@ -108,10 +142,18 @@ function GuthSCP.unrageSCP096( ply, no_sound )
 		ply:SetWalkSpeed( triggered_scps[ply].walk_speed )
 		ply:SetRunSpeed( triggered_scps[ply].run_speed )
 		ply:SetJumpPower( triggered_scps[ply].jump_power )
-		triggered_scps[ply] = nil
 
+		--  reset target state
+		net.Start( "vkxscp096:trigger" )
+			net.WriteEntity( ply )
+			net.WriteBool( false )
+		net.Send( triggered_scps[ply].targets_keys )
+
+		--  reset SCP's targets
 		net.Start( "vkxscp096:target" )
 		net.Send( ply )
+		
+		triggered_scps[ply] = nil
 	end
 
 	GuthSCP.debugPrint( "VKX SCP 096", "%s has been unraged", ply:GetName() )
@@ -122,10 +164,17 @@ function GuthSCP.addSCP096Target( target, ply )
 	triggered_scps[ply].targets[target] = true
 	triggered_scps[ply].targets_keys = table.GetKeys( triggered_scps[ply].targets )
 
+	--  add target to SCP's view
 	net.Start( "vkxscp096:target" )
 		net.WriteEntity( target )
 		net.WriteBool( true )
 	net.Send( ply )
+
+	--  alert target from being targeted by the SCP
+	net.Start( "vkxscp096:trigger" )
+		net.WriteEntity( ply )
+		net.WriteBool( true )
+	net.Send( target )
 
 	GuthSCP.debugPrint( "VKX SCP 096", "%s has been added to %s's targets. %d targets remaining.", target:GetName(), ply:GetName(), #triggered_scps[ply].targets_keys )
 end
@@ -134,10 +183,17 @@ function GuthSCP.removeSCP096Target( target, ply )
 	triggered_scps[ply].targets[target] = nil
 	triggered_scps[ply].targets_keys = table.GetKeys( triggered_scps[ply].targets )
 
+	--  remove target from SCP's view
 	net.Start( "vkxscp096:target" )
 		net.WriteEntity( target )
 		net.WriteBool( false )
 	net.Send( ply )
+
+	--  alert target from being untargeted by the SCP
+	net.Start( "vkxscp096:trigger" )
+		net.WriteEntity( ply )
+		net.WriteBool( false )
+	net.Send( target )
 
 	GuthSCP.debugPrint( "VKX SCP 096", "%s has been removed from %s's targets. %d targets remaining.", target:GetName(), ply:GetName(), #triggered_scps[ply].targets_keys )
 
@@ -168,7 +224,20 @@ function GuthSCP.getSCP096s()
 	return scps_096
 end
 
---  refresh scps list at a fixed interval
+--  refresh scps list if necessary
+local function sync_scps_list( ply )
+	net.Start( "vkxscp096:refresh_list" )
+		net.WriteUInt( #scps_096, GuthSCP.NET_SCPS_LIST_BITS )
+		for i, v in ipairs( scps_096 ) do
+			net.WriteEntity( v )
+		end
+	if ply then
+		net.Send( ply )
+	else
+		net.Broadcast()
+	end
+end
+
 local function refresh_scps_list()
 	scps_096 = {}
 
@@ -178,7 +247,8 @@ local function refresh_scps_list()
 		end
 	end
 
-	GuthSCP.debugPrint( "VKX SCP 096", "SCPs cache has been updated" )
+	sync_scps_list()
+	GuthSCP.debugPrint( "VKX SCP 096", "SCPs cache has been updated, %d instances found", #scps_096 )
 end
 
 hook.Add( "WeaponEquip", "vkxscp096:add_scp", function( weapon, ply )
@@ -193,6 +263,7 @@ hook.Add( "WeaponEquip", "vkxscp096:add_scp", function( weapon, ply )
 
 	--  add in the list
 	scps_096[#scps_096 + 1] = ply
+	sync_scps_list()
 	GuthSCP.debugPrint( "VKX SCP 096", "%s is a new SCP-096 instance", ply:GetName() )
 end )
 
@@ -214,73 +285,60 @@ concommand.Add( "vkx_scp096_print_scps", function( ply )
 	end
 end )
 
---  trigger
-function GuthSCP.triggerSCP096( target, ply )
-	if target == ply then return end
-	if not GuthSCP.isSCP096( ply ) then return end
-	if GuthSCP.isSCP096Target( target, ply ) then return end
+net.Receive( "vkxscp096:trigger", function( len, ply )
+	if not ( GuthSCP.Config.vkxscp096.detection_method == GuthSCP.DETECTION_METHODS.CLIENTSIDE ) then return end
 
-	local should = hook.Run( "vkxscp096:should_trigger", target, ply )
-	if should == false then return end
+	local scp = net.ReadEntity()
+	if not IsValid( scp ) or not GuthSCP.isSCP096( scp ) then return end
 
-	GuthSCP.playClientSound( target, GuthSCP.Config.vkxscp096.sound_looked )
-	if CurTime() - ( triggered_scps[ply] and triggered_scps[ply].looked_sound_cooldown or 1 ) > .5 then
-		GuthSCP.playClientSound( ply, GuthSCP.Config.vkxscp096.sound_looked )
-		if triggered_scps[ply] then
-			triggered_scps[ply].looked_sound_cooldown = CurTime()
-		end
-	end
-
-	GuthSCP.debugPrint( "VKX SCP 096", "%s triggered %s", target:GetName(), ply:GetName() )
-
-	if not triggered_scps[ply] then
-		GuthSCP.enrageSCP096( ply )
-	end
-
-	--  add target
-	GuthSCP.addSCP096Target( target, ply )
-end
+	GuthSCP.triggerSCP096( ply, scp )
+end )
 
 --  think
 local red, green = Color( 255, 0, 0 ), Color( 0, 255, 0 )
-local head_bone = "ValveBiped.Bip01_Head1"
-hook.Add( "Think", "vkxscp096:trigger", function()
+timer.Create( "vkxscp096:trigger", .1, 0, function()
 	if #scps_096 == 0 then return end
 
-	local list_refreshed = false
-	for i, ply in ipairs( player.GetAll() ) do
-		if ply:Alive() and ( not GuthSCP.Config.vkxscp096.ignore_scps or not GuthSCP.isSCP( ply ) ) and not GuthSCP.isSCP096( ply ) then
+	--  remove invalid scps (e.g.: disconnected, team changed)
+	for i, scp in ipairs( scps_096 ) do
+		if not IsValid( scp ) or not GuthSCP.isSCP096( scp ) then
+			refresh_scps_list()
+			break
+		end
+	end
+
+	--  trigger detection
+	if GuthSCP.Config.vkxscp096.detection_method == GuthSCP.DETECTION_METHODS.SERVERSIDE then 
+		for i, ply in ipairs( player.GetAll() ) do
+			if not ply:Alive() or GuthSCP.isSCP096( ply ) then continue end
+			if GuthSCP.Config.vkxscp096.ignore_scps and GuthSCP.isSCP( ply ) then continue end
+	
+			local ply_head_id = ply:LookupBone( GuthSCP.Config.vkxscp096.detection_head_bone )
+			local ply_head_pos = ply_head_id and ply:GetBonePosition( ply_head_id ) or ply:EyePos()
+	
 			for i, scp in ipairs( scps_096 ) do
-				--  remove invalid scps (e.g.: disconnected, team changed)
-				if not IsValid( scp ) or not GuthSCP.isSCP096( scp ) then
-					if not list_refreshed then
-						refresh_scps_list()
-						list_refreshed = true
-					end
-					continue
-				end
-
 				if not scp:Alive() or GuthSCP.isSCP096Target( ply, scp ) then continue end
-
-				--  bones
-				local scp_head_id = scp:LookupBone( head_bone )
-				local ply_head_id = ply:LookupBone( head_bone )
-				local scp_head_pos, ply_head_pos = scp_head_id and scp:GetBonePosition( scp_head_id ) or scp:EyePos(), ply_head_id and ply:GetBonePosition( ply_head_id ) or ply:EyePos()
-
-				--  angles
-				local scp_to_ply, ply_to_scp = ( ply_head_pos - scp_head_pos ):GetNormal(), ( scp_head_pos - ply_head_pos ):GetNormal()
-				local view_dot = ply:GetAimVector():Dot( ply_to_scp ) --  does ply see scp?
+	
 				local aim_dot = ply:GetAimVector():Dot( scp:GetAimVector() ) --  does ply and scp look at each other (avoid trigger when looking at his back)?
-
-				if view_dot > .55 and aim_dot < 0 then
+				if aim_dot >= 0 then continue end
+	
+				--  bones
+				local scp_head_id = scp:LookupBone( GuthSCP.Config.vkxscp096.detection_head_bone )
+				local scp_head_pos = scp_head_id and scp:GetBonePosition( scp_head_id ) or scp:EyePos()
+	
+				--  angles
+				local ply_to_scp = ( scp_head_pos - ply_head_pos ):GetNormal()
+				local view_dot = ply:GetAimVector():Dot( ply_to_scp ) --  does ply see scp?
+				if view_dot > .55 then
 					--  check obstacles
+					local scp_to_ply = ( ply_head_pos - scp_head_pos ):GetNormal()
 					local tr = util.TraceLine( {
 						start = scp_head_pos,
 						endpos = scp_head_pos + scp_to_ply * 5000,
 						filter = scp,
-						mask = MASK_SHOT_PORTAL, --  avoid traversable objects such as fences (BUG: window are still blocking the trace)
+						mask = MASK_VISIBLE_AND_NPCS, --  avoid traversable objects such as fences & windows
 					} )
-
+	
 					--debugoverlay.Text( tr.StartPos + Vector( 0, 0, 10 ), "in theoric view", .1 )
 					--debugoverlay.Line( tr.StartPos, tr.HitPos, .1, tr.Entity == ply and green or red )
 					if tr.Entity == ply then
@@ -293,7 +351,7 @@ hook.Add( "Think", "vkxscp096:trigger", function()
 					--debugoverlay.Text( scp_head_pos + Vector( 0, 0, 20 ), "no trigger", .1 )
 					--debugoverlay.Text( scp_head_pos + Vector( 0, 0, 10 ), "not in theoric view", .1 )
 				end
-
+	
 				--debugoverlay.Text( scp_head_pos, "view dot: " .. tostring( math.Round( view_dot, 3 ) ) .. "> 0.55?", .1 )
 				--debugoverlay.Text( scp_head_pos - Vector( 0, 0, 10 ), "aim dot: " .. tostring( math.Round( aim_dot, 3 ) ) .. "< 0?", .1 )
 				--debugoverlay.Text( scp_head_pos - Vector( 0, 0, 20 ), "view angle: " .. tostring( math.Round( math.deg( math.acos( view_dot ) ) ), 3 ) .. "°", .1 )

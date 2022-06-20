@@ -2,11 +2,130 @@ if not GuthSCP or not GuthSCP.Config then
 	return
 end
 
+--  refresh SCPs-096
+local scps_096 = {}
+function GuthSCP.getSCP096s()
+	return scps_096
+end
+
+net.Receive( "vkxscp096:refresh_list", function( len )
+	scps_096 = {}
+
+	--  get scps
+	local count = net.ReadUInt( GuthSCP.NET_SCPS_LIST_BITS )
+	for i = 1, count do
+		scps_096[i] = net.ReadEntity()
+	end
+	GuthSCP.debugPrint( "VKX SCP 096", "Received %d SCPs", count )
+end )
+
+local function refresh_scps_list( is_unreliable )
+	net.Start( "vkxscp096:refresh_list", is_unreliable )
+	net.SendToServer()
+	GuthSCP.debugPrint( "VKX SCP 096", "Requesting a refresh of the SCPs list %s", is_unreliable and "(unreliable)" or "" )
+end
+
+hook.Add( "InitPostEntity", "vkxscp096:refresh_list", refresh_scps_list )
+
+--  receive SCPs who target me
+local target_by_scps = {}
+net.Receive( "vkxscp096:trigger", function( len )
+	local scp = net.ReadEntity()
+	if not IsValid( scp ) then return end
+
+	target_by_scps[scp] = net.ReadBool() or nil
+end )
+
+local scr_w, scr_h = ScrW(), ScrH()
+local attraction_eye_angles, attraction_force
+
+local current_update_time = 0
+hook.Add( "Think", "vkxscp096:trigger", function()
+	if not GuthSCP.Config.vkxscp096 then return end --  wait for the config to be loaded
+	
+	local ply = LocalPlayer()
+	
+	--  homemade cooldown
+	if GuthSCP.Config.vkxscp096.detection_method == GuthSCP.DETECTION_METHODS.CLIENTSIDE and not ( GuthSCP.Config.vkxscp096.ignore_scps and GuthSCP.isSCP( ply ) ) and not GuthSCP.isSCP096( ply ) then
+		local dt = FrameTime()
+		current_update_time = current_update_time + dt
+		if current_update_time >= GuthSCP.Config.vkxscp096.detection_update_time then
+			current_update_time = current_update_time - GuthSCP.Config.vkxscp096.detection_update_time
+			
+			attraction_eye_angles = nil
+
+			local is_unreliable = GuthSCP.Config.vkxscp096.detection_update_time < .1
+	
+			--  trigger detection
+			local ply_head_id = ply:LookupBone( GuthSCP.Config.vkxscp096.detection_head_bone )
+			local ply_head_pos = ply_head_id and ply:GetBonePosition( ply_head_id ) or ply:EyePos()
+		
+			for i, scp in ipairs( scps_096 ) do
+				if not IsValid( scp ) or not GuthSCP.isSCP096( scp ) then 
+					refresh_scps_list( is_unreliable )
+					continue
+				end
+				if scp == ply then continue end
+				if target_by_scps[scp] then continue end
+		
+				--  get scp head pos
+				local scp_head_id = scp:LookupBone( GuthSCP.Config.vkxscp096.detection_head_bone )
+				local scp_head_pos = scp_head_id and scp:GetBonePosition( scp_head_id ) or scp:EyePos()
+				local scp_to_ply = ( ply_head_pos - scp_head_pos ):GetNormal()
+				
+				local view_dot = scp:GetAimVector():Dot( scp_to_ply ) --  does ply is in scp field of view?
+				if view_dot <= 0 then 
+					--print( "don't look at each other" )
+					continue 
+				end
+		
+				--  look for obstacles to 096
+				local tr = util.TraceLine( {
+					start = scp_head_pos,
+					endpos = scp_head_pos + scp_to_ply * 5000,
+					filter = scp,
+					mask = MASK_VISIBLE_AND_NPCS, --  avoid traversable objects such as fences & windows
+				} )
+				--debugoverlay.Cross( scp_head_pos, 1, .1 )
+				--debugoverlay.Line( scp_head_pos, scp_head_pos + scp_to_ply * 5000, .1 )
+				if not ( tr.Entity == ply ) then 
+					--print( "hit something else")
+					continue 
+				end
+		
+				--  check if the head is on the screen
+				local screen_pos = scp_head_pos:ToScreen()
+				if screen_pos.visible and screen_pos.x > 0 and screen_pos.x < scr_w and screen_pos.y > 0 and screen_pos.y < scr_h then
+					--print( "on screen" )
+					net.Start( "vkxscp096:trigger", is_unreliable )
+						net.WriteEntity( scp )
+					net.SendToServer()
+					GuthSCP.debugPrint( "VKX SCP 096", "Triggering %q.. %s", scp:GetName(), is_unreliable and "(unreliable)" or "" )
+				else
+					attraction_eye_angles = ( scp_head_pos - ply_head_pos ):Angle()
+					attraction_force = 1 - math.min( 1, ply_head_pos:DistToSqr( scp_head_pos ) / ( GuthSCP.Config.vkxscp096.attraction_dist ^ 2 ) )
+					--print( "not on screen" )
+				end
+			end
+		end
+	else
+		attraction_eye_angles = nil
+	end
+
+	--  drag player view towards 096 face 
+	if GuthSCP.Config.vkxscp096.attraction_enabled and attraction_eye_angles then 
+		local angle = LerpAngle( FrameTime() * GuthSCP.Config.vkxscp096.attraction_speed * attraction_force, ply:EyeAngles(), attraction_eye_angles )
+		angle.r = 0
+		ply:SetEyeAngles( angle )
+	end
+end )
+
+
 --  targets
 local targets, targets_keys = {}, {}
-
 net.Receive( "vkxscp096:target", function()
 	local ply = net.ReadEntity()
+	
 	--  add target
 	if IsValid( ply ) then
 		targets[ply] = net.ReadBool() or nil
@@ -18,7 +137,6 @@ net.Receive( "vkxscp096:target", function()
 		for i, v in ipairs( targets_keys ) do v.scp_096_path = nil end
 		targets, targets_keys = {}, {}
 	end
-
 end )
 
 function GuthSCP.getSCP096Targets()
