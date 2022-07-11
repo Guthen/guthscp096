@@ -152,6 +152,16 @@ hook.Add( "guthscpbase:config", "vkxscp096", function()
 						desc = "The Head Bone's Name to use for detecting obstacles between the potential target & SCP-096",
 						default = "ValveBiped.Bip01_Head1",
 					},
+					{
+						type = "NumWang",
+						name = "Detection angle",
+						id = "detection_angle",
+						desc = "Cosinus of the angle between the vector ply_heads_to_096_heads and ply_aim_vector when 096 is triggered. 096 detect player when angle between the vector ply_heads_to_096_heads and ply_aim_vector is greater than this cosinus.",
+						default = 0.55,
+						decimals = 4,
+						min = -1,
+						max = 1
+					},
 					--  attraction
 					{
 						type = "Category",
