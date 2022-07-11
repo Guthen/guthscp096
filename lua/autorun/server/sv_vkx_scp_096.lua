@@ -329,7 +329,7 @@ timer.Create( "vkxscp096:trigger", .1, 0, function()
 				--  angles
 				local ply_to_scp = ( scp_head_pos - ply_head_pos ):GetNormal()
 				local view_dot = ply:GetAimVector():Dot( ply_to_scp ) --  does ply see scp?
-				if view_dot > .55 then
+				if view_dot > GuthSCP.Config.vkxscp096.detection_angle then
 					--  check obstacles
 					local scp_to_ply = ( ply_head_pos - scp_head_pos ):GetNormal()
 					local tr = util.TraceLine( {

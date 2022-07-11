@@ -152,6 +152,16 @@ hook.Add( "guthscpbase:config", "vkxscp096", function()
 						desc = "The Head Bone's Name to use for detecting obstacles between the potential target & SCP-096",
 						default = "ValveBiped.Bip01_Head1",
 					},
+					{
+						type = "NumWang",
+						name = "Detection Angle",
+						id = "detection_angle",
+						desc = "Detection Method must be set to 'Serverside'! Cosine of the victim's field of view angle used to trigger SCP-096. Increasing this value will make the detection threshold smaller and vice-versa. By default, set to 0.55 which is equivalent to an angle of 56°.",
+						default = .55,
+						decimals = 4,
+						min = -1,
+						max = 1
+					},
 					--  attraction
 					{
 						type = "Category",
