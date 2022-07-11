@@ -154,8 +154,8 @@ hook.Add( "guthscpbase:config", "vkxscp096", function()
 					},
 					{
 						type = "NumWang",
-						name = "Detection angle",
-						id = "Detection_angle",
+						name = "Detection Angle",
+						id = "detection_angle",
 						desc = "Detection Method must be set to 'Serverside'! Cosine of the victim's field of view angle used to trigger SCP-096. Increasing this value will make the detection threshold smaller and vice-versa. By default, set to 0.55 which is equivalent to an angle of 56°.",
 						default = .55,
 						decimals = 4,
