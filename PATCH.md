@@ -12,4 +12,4 @@
 + **FIX** : Error with timers while Enraging an invalid SCP-096 (e.g.: disconnected)  
 
 ### 11/07/2022
-+ **ADD** : Detection Angle in the Configuration ([contribution](https://github.com/Guthen/vkxscp096/pull/3))
++ **ADD** : Detection Angle in the Configuration ([contribution](https://github.com/Guthen/vkxscp096/pull/3) from [@Zekirax](https://github.com/Zekirax))
