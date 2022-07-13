@@ -38,9 +38,10 @@ function SWEP:PrimaryAttack()
 	self:SetNextPrimaryFire( CurTime() + .1 )
 
 	local ply = self:GetOwner()
+	if not GuthSCP.isSCP096Enraged( ply ) then return end
+	
 	local tr = ply:GetEyeTrace()
 	local target = tr.Entity
-	if not GuthSCP.isSCP096Enraged( ply ) then return end
 
 	--  kill target
 	if target:IsPlayer() and target:GetPos():DistToSqr( ply:GetPos() ) <= dist_sqr and GuthSCP.isSCP096Target( target, ply ) then
