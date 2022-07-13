@@ -180,13 +180,13 @@ hook.Add( "guthscpbase:config", "vkxscp096", function()
 						id = "attraction_speed",
 						desc = "Scale the speed of the attraction",
 						default = .5,
-                        decimals = 2,
+						decimals = 2,
 					},
 					{
 						type = "NumWang",
 						name = "Attraction Distance",
 						id = "attraction_dist",
-                        desc = "Maximum distance where SCP-096's attraction take effect. 1 meter ~= 40 unit",
+						desc = "Maximum distance where SCP-096's attraction take effect. 1 meter ~= 40 unit",
 						default = 8 * 40, -- 8 meters
 					},
 					--  sounds

@@ -312,7 +312,7 @@ timer.Create( "vkxscp096:trigger", .1, 0, function()
 		for i, ply in ipairs( player.GetAll() ) do
 			if not ply:Alive() or GuthSCP.isSCP096( ply ) then continue end
 			if GuthSCP.Config.vkxscp096.ignore_scps and GuthSCP.isSCP( ply ) then continue end
-	
+			
 			local ply_head_id = ply:LookupBone( GuthSCP.Config.vkxscp096.detection_head_bone )
 			local ply_head_pos = ply_head_id and ply:GetBonePosition( ply_head_id ) or ply:EyePos()
 	
