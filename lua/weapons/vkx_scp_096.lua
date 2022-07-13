@@ -35,10 +35,12 @@ SWEP.GuthSCPLVL = 0
 local dist_sqr = 125 ^ 2
 function SWEP:PrimaryAttack()
 	if not SERVER then return end
-	self:SetNextPrimaryFire( CurTime() + .1 )
-
+	
 	local ply = self:GetOwner()
-	if not GuthSCP.isSCP096Enraged( ply ) then return end
+	if not GuthSCP.isSCP096Enraged( ply ) then 
+		self:SetNextPrimaryFire( CurTime() + .1 )
+		return 
+	end
 	
 	local tr = ply:GetEyeTrace()
 	local target = tr.Entity
