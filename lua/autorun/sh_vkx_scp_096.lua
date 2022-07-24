@@ -1,28 +1,28 @@
-if not GuthSCP or not GuthSCP.Config then
+if not guthscp or not guthscp.configs then
 	error( "[VKX SCP 096] '[SCP] Guthen's Addons Base' (https://steamcommunity.com/sharedfiles/filedetails/?id=2139692777) is not installed on the server, the addon won't work as intended, please install the base addon." )
 	return
 end
 
-GuthSCP.DETECTION_METHODS = {
+guthscp.DETECTION_METHODS = {
 	SERVERSIDE = 0,
 	CLIENTSIDE = 1,
 }
-GuthSCP.NET_SCPS_LIST_BITS = 5  --  allows 31 differents players in the list (which hopefully won't happen :x)
+guthscp.NET_SCPS_LIST_BITS = 5  --  allows 31 differents players in the list (which hopefully won't happen :x)
 
 --  functions
-function GuthSCP.isSCP096( ply )
+function guthscp.isSCP096( ply )
 	ply = ply or CLIENT and LocalPlayer() 
-	return ply:Team() == GuthSCP.Config.vkxscp096.team or ply:HasWeapon( "vkx_scp_096" )
+	return ply:Team() == guthscp.configs.vkxscp096.team or ply:HasWeapon( "vkx_scp_096" )
 end
 
-function GuthSCP.isSCP096Enraged( ply )
+function guthscp.isSCP096Enraged( ply )
 	return ply:GetNWBool( "VKX:Is096Enraged", false )
 end
 
 --  config
-hook.Add( "guthscpbase:config", "vkxscp096", function()
+hook.Add( "guthscp:config", "vkxscp096", function()
 
-	GuthSCP.addConfig( "vkxscp096", {
+	guthscp.config.add( "vkxscp096", {
 		label = "SCP-096",
 		icon = "icon16/user_red.png",
 		elements = {
@@ -35,7 +35,7 @@ hook.Add( "guthscpbase:config", "vkxscp096", function()
 						type = "Category",
 						name = "General",
 					},
-					GuthSCP.createTeamConfigElement( {
+					guthscp.config.create_team_element( {
 						name = "SCP-096 Team",
 						id = "team",
 						default = "TEAM_SCP096",
@@ -88,14 +88,14 @@ hook.Add( "guthscpbase:config", "vkxscp096", function()
 						default = 30,
 						min = 0,
 					},
-					GuthSCP.maxKeycardLevel and {
+					guthscp.maxKeycardLevel and {
 						type = "NumWang",
 						name = "Keycard Level",
 						id = "keycard_level",
 						desc = "Compatibility with my keycard system. Set a keycard level to SCP-096's swep",
 						default = 5,
 						min = 0,
-						max = GuthSCP.maxKeycardLevel,
+						max = guthscp.maxKeycardLevel,
 					},
 					{
 						type = "CheckBox",
@@ -115,10 +115,10 @@ hook.Add( "guthscpbase:config", "vkxscp096", function()
 						type = "CheckBox",
 						name = "Ignore SCPs",
 						id = "ignore_scps",
-						desc = "If checked, SCP-096 won't be triggered by 'SCP Teams' defined in 'guthscpbase' config and by the 'Ignore Teams' below. If unchecked, only the 'Ignore Teams' below won't trigger SCP-096",
+						desc = "If checked, SCP-096 won't be triggered by 'SCP Teams' defined in 'guthscp' config and by the 'Ignore Teams' below. If unchecked, only the 'Ignore Teams' below won't trigger SCP-096",
 						default = true,
 					},
-					GuthSCP.createTeamsConfigElement( {
+					guthscp.config.create_teams_element( {
 						name = "Ignore Teams",
 						id = "ignore_teams",
 						desc = "All teams that can't trigger SCP-096.",
@@ -137,7 +137,7 @@ hook.Add( "guthscpbase:config", "vkxscp096", function()
 						default = .1,
 						decimals = 2,
 					},
-					GuthSCP.createEnumElement( GuthSCP.DETECTION_METHODS, {
+					guthscp.config.create_enum_element( guthscp.DETECTION_METHODS, {
 						name = "Detection Method",
 						id = "detection_method",
 						desc = [[Method used to trigger SCP-096 while looking at his face.
@@ -253,23 +253,23 @@ hook.Add( "guthscpbase:config", "vkxscp096", function()
 						name = "Apply",
 						action = function( form, serialize_form )
 							--PrintTable( serialize_form )
-							GuthSCP.sendConfig( "vkxscp096", serialize_form )
+							guthscp.config.send( "vkxscp096", serialize_form )
 						end,
 					},
 				},
 			},
 		},
 		receive = function( form )
-			form.ignore_teams = GuthSCP.receiveTeamsConfig( form.ignore_teams )
+			form.ignore_teams = guthscp.config.receive_teams( form.ignore_teams )
 
-			GuthSCP.applyConfig( "vkxscp096", form, {
+			guthscp.config.apply( "vkxscp096", form, {
 				network = true,
 				save = true,
 			} )
 		end,
 		parse = function( form )
-			form.ignore_teams = GuthSCP.parseTeamsConfig( form.ignore_teams )
-			form.team = GuthSCP.parseTeamConfig( form.team )
+			form.ignore_teams = guthscp.config.parse_teams( form.ignore_teams )
+			form.team = guthscp.parse_team_config( form.team )
 
 			if SERVER then
 				timer.Adjust( "vkxscp096:trigger", form.detection_update_time )
