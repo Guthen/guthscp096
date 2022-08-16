@@ -4,7 +4,7 @@ end
 
 --  refresh SCPs-096
 local scps_096 = {}
-function guthscp.getSCP096s()
+function guthscp.get_scps_096()
 	return scps_096
 end
 
@@ -46,7 +46,7 @@ hook.Add( "Think", "vkxscp096:trigger", function()
 	local ply = LocalPlayer()
 	
 	--  homemade cooldown
-	if guthscp.configs.vkxscp096.detection_method == guthscp.DETECTION_METHODS.CLIENTSIDE and not ( guthscp.configs.vkxscp096.ignore_scps and guthscp.isSCP( ply ) ) and not guthscp.isSCP096( ply ) then
+	if guthscp.configs.vkxscp096.detection_method == guthscp.DETECTION_METHODS.CLIENTSIDE and not ( guthscp.configs.vkxscp096.ignore_scps and guthscp.is_scp( ply ) ) and not guthscp.is_scp_096( ply ) then
 		local dt = FrameTime()
 		current_update_time = current_update_time + dt
 		if current_update_time >= guthscp.configs.vkxscp096.detection_update_time then
@@ -61,7 +61,7 @@ hook.Add( "Think", "vkxscp096:trigger", function()
 			local ply_head_pos = ply_head_id and ply:GetBonePosition( ply_head_id ) or ply:EyePos()
 		
 			for i, scp in ipairs( scps_096 ) do
-				if not IsValid( scp ) or not guthscp.isSCP096( scp ) then 
+				if not IsValid( scp ) or not guthscp.is_scp_096( scp ) then 
 					refresh_scps_list( is_unreliable )
 					continue
 				end
@@ -139,7 +139,7 @@ net.Receive( "vkxscp096:target", function()
 	end
 end )
 
-function guthscp.getSCP096Targets()
+function guthscp.get_scp_096_targets()
 	return targets_keys
 end
 
@@ -152,7 +152,7 @@ local render_pathfinding = CreateClientConVar( "vkx_scp096_render_path_finding",
 local indicator_color = Color( 220, 62, 62 )
 hook.Add( "PreDrawHalos", "vkxscp096:target", function()
 	if not render_halo:GetBool() then return end
-	if not guthscp.isSCP096() then return end
+	if not guthscp.is_scp_096() then return end
 
 	halo.Add( targets_keys, indicator_color, 2, 2, 1, true, true )
 end )
@@ -163,7 +163,7 @@ local sphere_radius_sqr = sphere_radius ^ 2
 local last_path_time = CurTime()
 hook.Add( "PostDrawTranslucentRenderables", "vkxscp096:target", function()
 	if not render_line:GetBool() then return end
-	if not guthscp.isSCP096() then return end
+	if not guthscp.is_scp_096() then return end
 
 	render.SetColorMaterial()
 	local start_pos = LocalPlayer():GetPos()
@@ -212,11 +212,11 @@ end )
 local enrage_time, scale, factor, end_scale = 0, 0, 1.1, 0
 hook.Add( "HUDPaint", "zzz_vkxscp096:rage", function()
 	if not render_pp:GetBool() then return end
-	if not guthscp.isSCP096() then return end
+	if not guthscp.is_scp_096() then return end
 
 	local ply = LocalPlayer()
 	--  enraged
-	if guthscp.isSCP096Enraged( ply ) then
+	if guthscp.is_scp_096_enraged( ply ) then
 		enrage_time = enrage_time + FrameTime()
 		factor = math.min( 1.1, enrage_time / guthscp.configs.vkxscp096.trigger_time )
 

@@ -15,8 +15,8 @@ local MODULE = {
 	},
 }
 
---  config
 MODULE.menu = {
+    --  config
 	config = {
 	    form = {
             {
@@ -77,15 +77,15 @@ MODULE.menu = {
                 default = 30,
                 min = 0,
             },
-            -- GuthSCP.maxKeycardLevel and {
-            -- 	type = "NumWang",
-            -- 	name = "Keycard Level",
-            -- 	id = "keycard_level",
-            -- 	desc = "Compatibility with my keycard system. Set a keycard level to SCP-096's swep",
-            -- 	default = 5,
-            -- 	min = 0,
-            -- 	max = GuthSCP.maxKeycardLevel,
-            -- },
+            guthscp.maxKeycardLevel and {
+             	type = "NumWang",
+             	name = "Keycard Level",
+             	id = "keycard_level",
+             	desc = "Compatibility with my keycard system. Set a keycard level to SCP-096's swep",
+             	default = 5,
+             	min = 0,
+             	max = guthscp.maxKeycardLevel,
+            },
             {
                 type = "CheckBox",
                 name = "Unrage on Time",

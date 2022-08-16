@@ -4,11 +4,11 @@ util.AddNetworkString( "vkxscp096:trigger" )
 
 --  enrage
 local triggered_scps = {}
-function guthscp.enrageSCP096( ply )
-	if not guthscp.isSCP096( ply ) then return false end
+function guthscp.enrage_scp_096( ply )
+	if not guthscp.is_scp_096( ply ) then return false end
 
 	--  ensure to stop sounds
-	guthscp.stopSCP096Sounds( ply )
+	guthscp.stop_scp_096_sounds( ply )
 
 	--  save default values
 	if not triggered_scps[ply] then
@@ -41,7 +41,7 @@ function guthscp.enrageSCP096( ply )
 	end
 
 	timer.Create( "VKX:Triggering096" .. ply:AccountID(), guthscp.configs.vkxscp096.trigger_time, 1, function()
-		if not IsValid( ply ) or not guthscp.isSCP096( ply ) then return end
+		if not IsValid( ply ) or not guthscp.is_scp_096( ply ) then return end
 		ply:Freeze( false )
 
 		--  stop trigger sound
@@ -55,8 +55,8 @@ function guthscp.enrageSCP096( ply )
 		--  unrage
 		if guthscp.configs.vkxscp096.unrage_on_time then
 			timer.Create( "VKX:Idling096" .. ply:AccountID(), guthscp.configs.vkxscp096.enrage_time, 1, function()
-				if not IsValid( ply ) or not guthscp.isSCP096( ply ) then return end
-				guthscp.unrageSCP096( ply )
+				if not IsValid( ply ) or not guthscp.is_scp_096( ply ) then return end
+				guthscp.unrage_scp_096( ply )
 			end )
 		end
 	end )
@@ -67,17 +67,17 @@ end
 
 
 --  trigger
-function guthscp.triggerSCP096( target, ply )
+function guthscp.trigger_scp_096( target, ply )
 	if target == ply then return end
-	if not guthscp.isSCP096( ply ) then return end
-	if guthscp.isSCP096Target( target, ply ) then return end
+	if not guthscp.is_scp_096( ply ) then return end
+	if guthscp.is_scp_096_target( target, ply ) then return end
 
 	local should = hook.Run( "vkxscp096:should_trigger", target, ply )
 	if should == false then return end
 
-	guthscp.playClientSound( target, guthscp.configs.vkxscp096.sound_looked )
+	guthscp.play_client_sound( target, guthscp.configs.vkxscp096.sound_looked )
 	if CurTime() - ( triggered_scps[ply] and triggered_scps[ply].looked_sound_cooldown or 1 ) > .5 then
-		guthscp.playClientSound( ply, guthscp.configs.vkxscp096.sound_looked )
+		guthscp.play_client_sound( ply, guthscp.configs.vkxscp096.sound_looked )
 		if triggered_scps[ply] then
 			triggered_scps[ply].looked_sound_cooldown = CurTime()
 		end
@@ -86,23 +86,23 @@ function guthscp.triggerSCP096( target, ply )
 	guthscp.debug( "VKX SCP 096", "%s triggered %s", target:GetName(), ply:GetName() )
 
 	if not triggered_scps[ply] then
-		guthscp.enrageSCP096( ply )
+		guthscp.enrage_scp_096( ply )
 	end
 
 	--  add target
-	guthscp.addSCP096Target( target, ply )
+	guthscp.add_scp_096_target( target, ply )
 end
 
 --  sounds
-function guthscp.stopSCP096Sounds( ply )
+function guthscp.stop_scp_096_sounds( ply )
 	guthscp.sound.stop( ply, guthscp.configs.vkxscp096.sound_idle )
 	guthscp.sound.stop( ply, guthscp.configs.vkxscp096.sound_enrage ) 
 	guthscp.sound.stop( ply, guthscp.configs.vkxscp096.sound_trigger )
 end
 
 --  unrage
-function guthscp.unrageSCP096( ply, no_sound )
-	guthscp.stopSCP096Sounds( ply )
+function guthscp.unrage_scp_096( ply, no_sound )
+	guthscp.stop_scp_096_sounds( ply )
 
 	--  timers
 	timer.Remove( "VKX:Triggering096" .. ply:AccountID() )
@@ -156,7 +156,7 @@ function guthscp.unrageSCP096( ply, no_sound )
 end
 
 --  target
-function guthscp.addSCP096Target( target, ply )
+function guthscp.add_scp_096_target( target, ply )
 	triggered_scps[ply].targets[target] = true
 	triggered_scps[ply].targets_keys = table.GetKeys( triggered_scps[ply].targets )
 
@@ -175,7 +175,7 @@ function guthscp.addSCP096Target( target, ply )
 	guthscp.debug( "VKX SCP 096", "%s has been added to %s's targets. %d targets remaining.", target:GetName(), ply:GetName(), #triggered_scps[ply].targets_keys )
 end
 
-function guthscp.removeSCP096Target( target, ply )
+function guthscp.remove_scp_096_target( target, ply )
 	triggered_scps[ply].targets[target] = nil
 	triggered_scps[ply].targets_keys = table.GetKeys( triggered_scps[ply].targets )
 
@@ -195,28 +195,28 @@ function guthscp.removeSCP096Target( target, ply )
 
 	--  unrage 096 when there is no remaining target
 	if #triggered_scps[ply].targets_keys == 0 then
-		guthscp.unrageSCP096( ply )
+		guthscp.unrage_scp_096( ply )
 	end
 end
 
-function guthscp.removeFromSCP096Targets( ply )
-	for i, v in ipairs( guthscp.getSCP096s() ) do
-		if guthscp.isSCP096Target( ply, v ) then
-			guthscp.removeSCP096Target( ply, v )
+function guthscp.remove_from_scp_096_targets( ply )
+	for i, v in ipairs( guthscp.get_scps_096() ) do
+		if guthscp.is_scp_096_target( ply, v ) then
+			guthscp.remove_scp_096_target( ply, v )
 		end
 	end
 end
 
-function guthscp.isSCP096Target( target, ply )
+function guthscp.is_scp_096_target( target, ply )
 	return triggered_scps[ply] and triggered_scps[ply].targets[target]
 end
 
-function guthscp.getSCP096Targets( ply )
+function guthscp.get_scp_096_targets( ply )
 	return triggered_scps[ply] and triggered_scps[ply].targets_keys
 end
 
 local scps_096 = {}
-function guthscp.getSCP096s()
+function guthscp.get_scps_096()
 	return scps_096
 end
 
@@ -238,7 +238,7 @@ local function refresh_scps_list()
 	scps_096 = {}
 
 	for i, v in ipairs( player.GetAll() ) do
-		if guthscp.isSCP096( v ) then
+		if guthscp.is_scp_096( v ) then
 			scps_096[#scps_096 + 1] = v
 		end
 	end
@@ -285,9 +285,9 @@ net.Receive( "vkxscp096:trigger", function( len, ply )
 	if not ( guthscp.configs.vkxscp096.detection_method == guthscp.DETECTION_METHODS.CLIENTSIDE ) then return end
 
 	local scp = net.ReadEntity()
-	if not IsValid( scp ) or not guthscp.isSCP096( scp ) then return end
+	if not IsValid( scp ) or not guthscp.is_scp_096( scp ) then return end
 
-	guthscp.triggerSCP096( ply, scp )
+	guthscp.trigger_scp_096( ply, scp )
 end )
 
 --  think
@@ -297,7 +297,7 @@ timer.Create( "vkxscp096:trigger", .1, 0, function()
 
 	--  remove invalid scps (e.g.: disconnected, team changed)
 	for i, scp in ipairs( scps_096 ) do
-		if not IsValid( scp ) or not guthscp.isSCP096( scp ) then
+		if not IsValid( scp ) or not guthscp.is_scp_096( scp ) then
 			refresh_scps_list()
 			break
 		end
@@ -306,14 +306,14 @@ timer.Create( "vkxscp096:trigger", .1, 0, function()
 	--  trigger detection
 	if guthscp.configs.vkxscp096.detection_method == guthscp.DETECTION_METHODS.SERVERSIDE then 
 		for i, ply in ipairs( player.GetAll() ) do
-			if not ply:Alive() or guthscp.isSCP096( ply ) then continue end
-			if guthscp.configs.vkxscp096.ignore_scps and guthscp.isSCP( ply ) then continue end
+			if not ply:Alive() or guthscp.is_scp_096( ply ) then continue end
+			if guthscp.configs.vkxscp096.ignore_scps and guthscp.is_scp( ply ) then continue end
 			
 			local ply_head_id = ply:LookupBone( guthscp.configs.vkxscp096.detection_head_bone )
 			local ply_head_pos = ply_head_id and ply:GetBonePosition( ply_head_id ) or ply:EyePos()
 	
 			for i, scp in ipairs( scps_096 ) do
-				if not scp:Alive() or guthscp.isSCP096Target( ply, scp ) then continue end
+				if not scp:Alive() or guthscp.is_scp_096_target( ply, scp ) then continue end
 	
 				local aim_dot = ply:GetAimVector():Dot( scp:GetAimVector() ) --  does ply and scp look at each other (avoid trigger when looking at his back)?
 				if aim_dot >= 0 then continue end
@@ -338,7 +338,7 @@ timer.Create( "vkxscp096:trigger", .1, 0, function()
 					--debugoverlay.Text( tr.StartPos + Vector( 0, 0, 10 ), "in theoric view", .1 )
 					--debugoverlay.Line( tr.StartPos, tr.HitPos, .1, tr.Entity == ply and green or red )
 					if tr.Entity == ply then
-						guthscp.triggerSCP096( ply, scp )
+						guthscp.trigger_scp_096( ply, scp )
 						--debugoverlay.Text( tr.StartPos + Vector( 0, 0, 20 ), "trigger!", .1 )
 					--else
 						--debugoverlay.Text( tr.StartPos + Vector( 0, 0, 20 ), "obstacle!", .1 )
@@ -358,16 +358,16 @@ end )
 
 --  unrage
 hook.Add( "OnPlayerChangedTeam", "vkxscp096:reset", function( ply, old_team, new_team )
-	if guthscp.isSCP096( ply ) then
-		guthscp.unrageSCP096( ply, true )
+	if guthscp.is_scp_096( ply ) then
+		guthscp.unrage_scp_096( ply, true )
 	end
 end )
 
 hook.Add( "DoPlayerDeath", "vkxscp096:reset", function( ply, attacker, dmg_info )
-	if guthscp.isSCP096( ply ) then 
-		guthscp.unrageSCP096( ply, true )
+	if guthscp.is_scp_096( ply ) then 
+		guthscp.unrage_scp_096( ply, true )
 	else
-		guthscp.removeFromSCP096Targets( ply )
+		guthscp.remove_from_scp_096_targets( ply )
 	end
 end )
 
@@ -380,13 +380,13 @@ if MedConfig then
 			local ply = ent:GetOwner()
 			if not IsValid( ply ) or not ply:IsPlayer() then return end
 			
-			guthscp.removeFromSCP096Targets( ply )
+			guthscp.remove_from_scp_096_targets( ply )
 		end )
 	end )
 end
 
 hook.Add( "PlayerShouldTakeDamage", "vkxscp096:invinsible", function( ply, attacker )
-	if guthscp.isSCP096( ply ) and guthscp.configs.vkxscp096.immortal then
+	if guthscp.is_scp_096( ply ) and guthscp.configs.vkxscp096.immortal then
 		return false
 	end
 end )
@@ -394,13 +394,13 @@ end )
 hook.Add( "PlayerDisconnected", "vkxscp096:disconnect", function( ply )
 	for scp, v in pairs( triggered_scps ) do
 		if v.targets[ply] then
-			guthscp.removeSCP096Target( ply, scp )
+			guthscp.remove_scp_096_target( ply, scp )
 		end
 	end
 end )
 
 hook.Add( "PlayerFootstep", "vkxscp096:footstep", function( ply, pos, foot, sound, volume )
-	if guthscp.isSCP096( ply ) then
+	if guthscp.is_scp_096( ply ) then
 		local sounds = guthscp.configs.vkxscp096.sounds_footstep
 		if #sounds == 0 then return end
 
@@ -411,7 +411,7 @@ hook.Add( "PlayerFootstep", "vkxscp096:footstep", function( ply, pos, foot, soun
 end )
 
 hook.Add( "vkxscp096:should_trigger", "vkxscp096:ignore_teams", function( target, ply )
-	if guthscp.configs.vkxscp096.ignore_teams[guthscp.getTeamKeyname( target:Team() )] then
+	if guthscp.configs.vkxscp096.ignore_teams[guthscp.get_team_keyname( target:Team() )] then
 		return false
 	end
 end )
