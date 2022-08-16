@@ -123,5 +123,5 @@ function SWEP:SecondaryAttack()
 end
 
 if CLIENT and guthscp then
-	guthscp.spawnmenu.add_weapon( SWEP, "SCP-096" )
+	guthscp.spawnmenu.add_weapon( SWEP, "SCPs" )
 end
