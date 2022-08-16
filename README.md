@@ -15,6 +15,7 @@ This addon is available on the Workshop [here](https://steamcommunity.com/shared
     + Configurable **Sound** paths & hear distance
     + Configurable **Movement Speed** bonus while enraged
     + Configurable **Screen Shake** while near of an enraged SCP-096
+    + Bagging system with bag swep and avoid 096 to be triggered
     + *(fun) Allow multiple SCP-096 instances*
 + **SWEP**:
     + **Class**: `vkx_scp_096`
