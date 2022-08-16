@@ -23,12 +23,6 @@ MODULE.menu = {
                 type = "Category",
                 name = "General",
             },
-            guthscp.config.create_teams_element( {
-                name = "SCP-096 Team",
-                id = "team",
-                desc = "SCP 096 Team(s)",
-                default = {},
-            } ),
             {
                 type = "NumWang",
                 name = "Screen Shake Scale",

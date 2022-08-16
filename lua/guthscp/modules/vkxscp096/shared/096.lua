@@ -7,7 +7,7 @@ guthscp.NET_SCPS_LIST_BITS = 5  --  allows 31 differents players in the list (wh
 --  functions
 function guthscp.is_scp_096( ply )
 	ply = ply or CLIENT and LocalPlayer() 
-	return ply:Team() == guthscp.configs.vkxscp096.team or ply:HasWeapon( "vkx_scp_096" )
+	return ply:HasWeapon( "vkx_scp_096" )
 end
 
 function guthscp.is_scp_096_enraged( ply )
