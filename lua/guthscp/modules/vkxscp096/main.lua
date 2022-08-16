@@ -3,7 +3,7 @@ local MODULE = {
 	author = "Guthen",
 	version = "2.0.0",
 	description = "Enhanced SCP-096 System for Garry's Mod Roleplays",
-	icon = "icon16/eye.png",
+	icon = "icon16/status_offline.png",
 	version_url = "https://raw.githubusercontent.com/Certurix/vkxscp096/remaster-as-modules-based/lua/guthscp/modules/guthscp096/main.lua",
 	dependencies = {
 		base = "2.0.0",
@@ -246,16 +246,36 @@ MODULE.menu = {
             } )
         end,	
 	},
-    
+    --  details
+	details = {
+		{
+			text = "CC-BY-SA",
+			icon = "icon16/page_white_key.png",
+		},
+		"Wiki",
+		{
+			text = "Read Me",
+			icon = "icon16/information.png",
+			url = "https://github.com/Guthen/vkxscp096/blob/master/README.md",
+		},
+		"Social",
+		{
+			text = "Github",
+			icon = "guthscp/icons/github.png",
+			url = "https://github.com/Guthen/vkxscp096",
+		},
+		{
+			text = "Steam",
+			icon = "guthscp/icons/steam.png",
+			url = "https://steamcommunity.com/sharedfiles/filedetails/?id=2641523360"
+		},
+		{
+			text = "Discord",
+			icon = "guthscp/icons/discord.png",
+			url = "https://discord.gg/Yh5TWvPwhx",
+		},
+	},
 }
-
---  TODO: remove if not used
-function MODULE:construct()
-end
-
-function MODULE:init()
-	print("SCP-096 Module has ben loaded!")
-end
 
 guthscp.module.hot_reload( "vkxscp096" )
 return MODULE
