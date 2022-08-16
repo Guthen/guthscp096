@@ -13,4 +13,4 @@ Don't try to put it on your server, it wont work.
 Are you looking for my SCP-096 Bag Module?
 Its now in a separate repository!
 
-[Get access here](https://github.com/Certurix/ctx096bag/edit/main/README.md)
+[Get access here](https://github.com/Certurix/ctx096bag)
