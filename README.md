@@ -21,7 +21,7 @@ This addon is available on the Workshop [here](https://steamcommunity.com/shared
     + **Left Mouse Button**: while enraged, **kill your targets** or **break the looking entity**
     + **Right Mouse Button** to cover your hands on your face ─ unfortunately, it's not visible for other players
     + (optional & configurable) [Keycard System](https://steamcommunity.com/sharedfiles/filedetails/?id=1781514401) custom access
-+ Configurable in-game with [[SCP] Guthen's Addons Base](https://steamcommunity.com/sharedfiles/filedetails/?id=2139692777) (`guthscpbase` in your console)
++ Configurable in-game with [[SCP] Guthen's Addons Base](https://steamcommunity.com/sharedfiles/filedetails/?id=2139692777) (`guthscp_menu` in your console)
 + Can **break doors and props** with a single left click while enraged
 + **Compatible with every gamemodes**
 + **Compatible with addons:**
@@ -35,7 +35,7 @@ This addon is available on the Workshop [here](https://steamcommunity.com/shared
 
 ## Known Issues
 ### "The addon doesn't work!"
-Be sure to have installed [[SCP] Guthen's Addons Base](https://steamcommunity.com/sharedfiles/filedetails/?id=2139692777) on your server. Verify that you can open the configuration menu with `guthscpbase` in your game console.
+Be sure to have installed [[SCP] Guthen's Addons Base](https://steamcommunity.com/sharedfiles/filedetails/?id=2139692777) on your server. Verify that you can open the configuration menu with `guthscp_menu` in your game console.
 
 ### "I enrage SCP-096 even though I didn't looked at him!"
 The detection system is far from being perfect as you can tell. 
