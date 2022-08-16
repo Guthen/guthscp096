@@ -1,5 +1,4 @@
 AddCSLuaFile()
-SWEP.Base = "guthscp_base"
 SWEP.PrintName = "SCP-096"
 SWEP.Author = "Vyrkx A.K.A. Guthen"
 SWEP.Instructions = "Left click to kill your targets and to break everything in your way. Right click to put your hands on your face (first person only)."
@@ -37,7 +36,7 @@ function SWEP:PrimaryAttack()
 	if not SERVER then return end
 	
 	local ply = self:GetOwner()
-	if not GuthSCP.isSCP096Enraged( ply ) then 
+	if not guthscp.isSCP096Enraged( ply ) then 
 		self:SetNextPrimaryFire( CurTime() + .1 )
 		return 
 	end
@@ -46,11 +45,11 @@ function SWEP:PrimaryAttack()
 	local target = tr.Entity
 
 	--  kill target
-	if target:IsPlayer() and target:GetPos():DistToSqr( ply:GetPos() ) <= dist_sqr and GuthSCP.isSCP096Target( target, ply ) then
+	if target:IsPlayer() and target:GetPos():DistToSqr( ply:GetPos() ) <= dist_sqr and guthscp.isSCP096Target( target, ply ) then
 		target:TakeDamage( 500, ply, self )
 	--  destroy entities
 	elseif tr.HitPos:DistToSqr( ply:GetPos() ) <= dist_sqr then
-		GuthSCP.breakEntitiesAtPlayerTrace( tr )
+		guthscp.breakEntitiesAtPlayerTrace( tr )
 	end
 	
 	--  attack anim
@@ -65,7 +64,7 @@ end
 if SERVER then
 	function SWEP:Equip( ply )
 		if IsValid( ply ) and ply:IsPlayer() then
-			GuthSCP.unrageSCP096( ply )
+			guthscp.unrageSCP096( ply )
 		end
 	end
 
@@ -77,16 +76,16 @@ if SERVER then
 	function SWEP:Think()
 		local ply = self:GetOwner()
 
-		self.GuthSCPLVL = GuthSCP.Config.vkxscp096.keycard_level or 0
+		self.GuthSCPLVL = guthscp.configs.vkxscp096.keycard_level or 0
 		if not self.is_first_time_passed then
 			self:SendWeaponAnim( ACT_VM_IDLE )
 			self.is_first_time_passed = true
 		end
 		
-		if GuthSCP.isSCP096Enraged( ply ) then
+		if guthscp.isSCP096Enraged( ply ) then
 			local time = CurTime() - ply:GetNWInt( "VKX:096EnragedTime", 0 )
-			local factor = time / GuthSCP.Config.vkxscp096.trigger_time
-			local shake_scale, shake_radius = GuthSCP.Config.vkxscp096.shake_scale, GuthSCP.Config.vkxscp096.shake_radius
+			local factor = time / guthscp.configs.vkxscp096.trigger_time
+			local shake_scale, shake_radius = guthscp.configs.vkxscp096.shake_scale, guthscp.configs.vkxscp096.shake_radius
 
 			if factor <= 1 then
 				if shake_scale > 0 then
@@ -114,7 +113,7 @@ function SWEP:SecondaryAttack()
         local ply = self:GetOwner()
         if not IsValid( ply ) then return end
 
-        if not GuthSCP.isSCP096Enraged( ply ) then
+        if not guthscp.isSCP096Enraged( ply ) then
 --[[             ply:GetViewModel():SendViewModelMatchingSequence( self:LookupSequence( "run" ) )
         else ]]
             self:SendWeaponAnim( ACT_VM_IDLE )
@@ -124,5 +123,5 @@ function SWEP:SecondaryAttack()
 end
 
 if CLIENT and guthscp then
-	guthscp.spawnmenu.add_entity( ENT, "General" )
+	guthscp.spawnmenu.add_weapon( SWEP, "SCP-096" )
 end
