@@ -18,7 +18,7 @@ local MODULE = {
 --  config
 MODULE.menu = {
 	config = {
-		form = {
+	    form = {
             {
                 type = "Category",
                 name = "General",
