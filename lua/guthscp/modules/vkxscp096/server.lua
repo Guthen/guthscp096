@@ -75,9 +75,9 @@ function guthscp.trigger_scp_096( target, ply )
 	local should = hook.Run( "vkxscp096:should_trigger", target, ply )
 	if should == false then return end
 
-	guthscp.play_client_sound( target, guthscp.configs.vkxscp096.sound_looked )
+	guthscp.sound.play_client( target, guthscp.configs.vkxscp096.sound_looked )
 	if CurTime() - ( triggered_scps[ply] and triggered_scps[ply].looked_sound_cooldown or 1 ) > .5 then
-		guthscp.play_client_sound( ply, guthscp.configs.vkxscp096.sound_looked )
+		guthscp.sound.play_client( ply, guthscp.configs.vkxscp096.sound_looked )
 		if triggered_scps[ply] then
 			triggered_scps[ply].looked_sound_cooldown = CurTime()
 		end
