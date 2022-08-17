@@ -17,7 +17,7 @@ This addon is available on the Workshop [here](https://steamcommunity.com/shared
     + Configurable **Screen Shake** while near of an enraged SCP-096
     + *(fun) Allow multiple SCP-096 instances*
 + **SWEP**:
-    + **Class**: `vkx_scp_096`
+    + **Class**: `guthscp_096`
     + **Left Mouse Button**: while enraged, **kill your targets** or **break the looking entity**
     + **Right Mouse Button** to cover your hands on your face ─ unfortunately, it's not visible for other players
     + (optional & configurable) [Keycard System](https://steamcommunity.com/sharedfiles/filedetails/?id=1781514401) custom access
@@ -28,10 +28,10 @@ This addon is available on the Workshop [here](https://steamcommunity.com/shared
     + [Ultimate gMedic](https://www.gmodstore.com/market/view/ultimate-gmedic)
 
 ## Convars
-+ `vkx_scp096_render_targets_halo <0 or 1>`: Render a halo on the SCP-096 targets, more expensive than a line
-+ `vkx_scp096_render_targets_line <0 or 1>`: Render a line between you and the SCP-096 targets 
-+ `vkx_scp096_render_post_process <0 or 1>`: Render post process effects as SCP-096, really expensive on performance but damn cool
-+ `vkx_scp096_render_path_finding <0 or 1>`: Render path toward targets as SCP-096. It's a rudimentary method, it's not 100% relatable.
++ `guthscp_096_render_targets_halo <0 or 1>`: Render a halo on the SCP-096 targets, more expensive than a line
++ `guthscp_096_render_targets_line <0 or 1>`: Render a line between you and the SCP-096 targets 
++ `guthscp_096_render_post_process <0 or 1>`: Render post process effects as SCP-096, really expensive on performance but damn cool
++ `guthscp_096_render_path_finding <0 or 1>`: Render path toward targets as SCP-096. It's a rudimentary method, it's not 100% relatable.
 
 ## Known Issues
 ### "The addon doesn't work!"

@@ -265,7 +265,7 @@ hook.Add( "WeaponEquip", "guthscp096:add_scp", function( weapon, ply )
 	MODULE:debug( "%s is a new SCP-096 instance", ply:GetName() )
 end )
 
-concommand.Add( "vkx_scp096_print_scps", function( ply )
+concommand.Add( "guthscp_096_print_scps", function( ply )
 	local text = ""
 
 	if #scps_096 == 0 then
