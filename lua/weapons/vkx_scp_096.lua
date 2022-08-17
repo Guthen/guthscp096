@@ -56,8 +56,8 @@ function SWEP:PrimaryAttack()
 	if target:IsPlayer() and guthscp.modules.vkxscp096.is_scp_096_target( target, ply ) then
 		target:TakeDamage( 500, ply, self )
 	--  destroy entities
-		guthscp.breakEntitiesAtPlayerTrace( tr )
 	else
+		guthscp.break_entities_at_player_trace( tr )
 	end
 	
 	--  attack anim
