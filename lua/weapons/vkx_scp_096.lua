@@ -31,7 +31,7 @@ SWEP.WorldModel	= ""
 
 SWEP.GuthSCPLVL = 0
 
-local dist_sqr = 125 ^ 2
+local dist = 125
 function SWEP:PrimaryAttack()
 	if not SERVER then return end
 	
@@ -41,15 +41,23 @@ function SWEP:PrimaryAttack()
 		return 
 	end
 	
-	local tr = ply:GetEyeTrace()
+	local start_pos = ply:EyePos()
+	local tr = util.TraceHull( {
+		start = start_pos,
+		endpos = start_pos + ply:GetAimVector() * dist,
+		filter = ply,
+		mins = Vector( -10, -10, -10 ),
+		maxs = Vector( 10, 10, 10 ),
+		mask = MASK_SHOT_HULL,
+	} )
 	local target = tr.Entity
 
 	--  kill target
-	if target:IsPlayer() and target:GetPos():DistToSqr( ply:GetPos() ) <= dist_sqr and guthscp.modules.vkxscp096.is_scp_096_target( target, ply ) then
+	if target:IsPlayer() and guthscp.modules.vkxscp096.is_scp_096_target( target, ply ) then
 		target:TakeDamage( 500, ply, self )
 	--  destroy entities
-	elseif tr.HitPos:DistToSqr( ply:GetPos() ) <= dist_sqr then
 		guthscp.breakEntitiesAtPlayerTrace( tr )
+	else
 	end
 	
 	--  attack anim
