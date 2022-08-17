@@ -36,7 +36,7 @@ function SWEP:PrimaryAttack()
 	if not SERVER then return end
 	
 	local ply = self:GetOwner()
-	if not guthscp.is_scp_096_enraged( ply ) then 
+	if not guthscp.modules.vkxscp096.is_scp_096_enraged( ply ) then 
 		self:SetNextPrimaryFire( CurTime() + .1 )
 		return 
 	end
@@ -45,7 +45,7 @@ function SWEP:PrimaryAttack()
 	local target = tr.Entity
 
 	--  kill target
-	if target:IsPlayer() and target:GetPos():DistToSqr( ply:GetPos() ) <= dist_sqr and guthscp.is_scp_096_target( target, ply ) then
+	if target:IsPlayer() and target:GetPos():DistToSqr( ply:GetPos() ) <= dist_sqr and guthscp.modules.vkxscp096.is_scp_096_target( target, ply ) then
 		target:TakeDamage( 500, ply, self )
 	--  destroy entities
 	elseif tr.HitPos:DistToSqr( ply:GetPos() ) <= dist_sqr then
@@ -64,7 +64,7 @@ end
 if SERVER then
 	function SWEP:Equip( ply )
 		if IsValid( ply ) and ply:IsPlayer() then
-			guthscp.unrage_scp_096( ply )
+			guthscp.modules.vkxscp096.unrage_scp_096( ply )
 		end
 	end
 
@@ -82,7 +82,7 @@ if SERVER then
 			self.is_first_time_passed = true
 		end
 		
-		if guthscp.is_scp_096_enraged( ply ) then
+		if guthscp.modules.vkxscp096.is_scp_096_enraged( ply ) then
 			local time = CurTime() - ply:GetNWInt( "VKX:096EnragedTime", 0 )
 			local factor = time / guthscp.configs.vkxscp096.trigger_time
 			local shake_scale, shake_radius = guthscp.configs.vkxscp096.shake_scale, guthscp.configs.vkxscp096.shake_radius
@@ -113,7 +113,7 @@ function SWEP:SecondaryAttack()
         local ply = self:GetOwner()
         if not IsValid( ply ) then return end
 
-        if not guthscp.is_scp_096_enraged( ply ) then
+        if not guthscp.modules.vkxscp096.is_scp_096_enraged( ply ) then
 --[[             ply:GetViewModel():SendViewModelMatchingSequence( self:LookupSequence( "run" ) )
         else ]]
             self:SendWeaponAnim( ACT_VM_IDLE )

@@ -15,6 +15,11 @@ local MODULE = {
 	},
 }
 
+MODULE.DETECTION_METHODS = {
+	SERVERSIDE = 0,
+	CLIENTSIDE = 1,
+}
+
 MODULE.menu = {
     --  config
 	config = {
@@ -120,13 +125,13 @@ MODULE.menu = {
                 default = .1,
                 decimals = 2,
             },
-            guthscp.config.create_enum_element( guthscp.DETECTION_METHODS, {
+            guthscp.config.create_enum_element( MODULE.DETECTION_METHODS, {
                 name = "Detection Method",
                 id = "detection_method",
                 desc = [[Method used to trigger SCP-096 while looking at his face.
 'Clientside' method lighten the calculations on the server in spite of the players and gives a better result than the 'Serverside' method, but it's exploitable by 'cheaters' (and you (and I) can't do so much about it), so they can just prevent themselves from triggering SCP-096, you are warned! Since it's clientside, it also doesn't work with Bots. 
 'Serverside' method is the secured (not exploitable) but unperfect option, it might trigger if you look a bit lower than his face.]],
-                default = "Serverside",
+                default = MODULE.DETECTION_METHODS.SERVERSIDE,
             } ),
             {
                 type = "TextEntry",
