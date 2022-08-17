@@ -276,5 +276,10 @@ MODULE.menu = {
 	},
 }
 
+function MODULE:init()
+	--  porting old config file 
+	self:port_old_config_file( "guthscpbase/vkxscp096.json" )
+end
+
 guthscp.module.hot_reload( "guthscp096" )
 return MODULE
