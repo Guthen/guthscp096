@@ -14,13 +14,13 @@ net.Receive( "vkxscp096:refresh_list", function( len )
 	for i = 1, count do
 		scps_096[i] = net.ReadEntity()
 	end
-	guthscp.debug( "VKX SCP 096", "Received %d SCPs", count )
+	MODULE:debug( "received %d SCPs", count )
 end )
 
 local function refresh_scps_list( is_unreliable )
 	net.Start( "vkxscp096:refresh_list", is_unreliable )
 	net.SendToServer()
-	guthscp.debug( "VKX SCP 096", "Requesting a refresh of the SCPs list %s", is_unreliable and "(unreliable)" or "" )
+	MODULE:debug( "requesting a refresh of the SCPs list %s", is_unreliable and "(unreliable)" or "" )
 end
 
 hook.Add( "InitPostEntity", "vkxscp096:refresh_list", refresh_scps_list )
@@ -98,7 +98,7 @@ hook.Add( "Think", "vkxscp096:trigger", function()
 					net.Start( "vkxscp096:trigger", is_unreliable )
 						net.WriteEntity( scp )
 					net.SendToServer()
-					guthscp.debug( "VKX SCP 096", "Triggering %q.. %s", scp:GetName(), is_unreliable and "(unreliable)" or "" )
+					MODULE:debug( "triggering %q.. %s", scp:GetName(), is_unreliable and "(unreliable)" or "" )
 				else
 					attraction_eye_angles = ( scp_head_pos - ply_head_pos ):Angle()
 					attraction_force = 1 - math.min( 1, ply_head_pos:DistToSqr( scp_head_pos ) / ( guthscp.configs.vkxscp096.attraction_dist ^ 2 ) )

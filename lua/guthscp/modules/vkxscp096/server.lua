@@ -63,7 +63,7 @@ function MODULE.enrage_scp_096( ply )
 		end
 	end )
 
-	guthscp.debug( "VKX SCP 096", "%s has been enraged", ply:GetName() )
+	MODULE:debug( "%s has been enraged", ply:GetName() )
 	return true
 end
 
@@ -85,7 +85,7 @@ function MODULE.trigger_scp_096( target, ply )
 		end
 	end
 
-	guthscp.debug( "VKX SCP 096", "%s triggered %s", target:GetName(), ply:GetName() )
+	MODULE:debug( "%s triggered %s", target:GetName(), ply:GetName() )
 
 	if not triggered_scps[ply] then
 		MODULE.enrage_scp_096( ply )
@@ -154,7 +154,7 @@ function MODULE.unrage_scp_096( ply, no_sound )
 		triggered_scps[ply] = nil
 	end
 
-	guthscp.debug( "VKX SCP 096", "%s has been unraged", ply:GetName() )
+	MODULE:debug( "%s has been unraged", ply:GetName() )
 end
 
 --  target
@@ -174,7 +174,7 @@ function MODULE.add_scp_096_target( target, ply )
 		net.WriteBool( true )
 	net.Send( target )
 
-	guthscp.debug( "VKX SCP 096", "%s has been added to %s's targets. %d targets remaining.", target:GetName(), ply:GetName(), #triggered_scps[ply].targets_keys )
+	MODULE:debug( "%s has been added to %s's targets. %d targets remaining.", target:GetName(), ply:GetName(), #triggered_scps[ply].targets_keys )
 end
 
 function MODULE.remove_scp_096_target( target, ply )
@@ -193,7 +193,7 @@ function MODULE.remove_scp_096_target( target, ply )
 		net.WriteBool( false )
 	net.Send( target )
 
-	guthscp.debug( "VKX SCP 096", "%s has been removed from %s's targets. %d targets remaining.", target:GetName(), ply:GetName(), #triggered_scps[ply].targets_keys )
+	MODULE:debug( "%s has been removed from %s's targets. %d targets remaining.", target:GetName(), ply:GetName(), #triggered_scps[ply].targets_keys )
 
 	--  unrage 096 when there is no remaining target
 	if #triggered_scps[ply].targets_keys == 0 then
@@ -246,7 +246,7 @@ local function refresh_scps_list()
 	end
 
 	sync_scps_list()
-	guthscp.debug( "VKX SCP 096", "SCPs cache has been updated, %d instances found", #scps_096 )
+	MODULE:debug( "SCPs cache has been updated, %d instances found", #scps_096 )
 end
 
 hook.Add( "WeaponEquip", "vkxscp096:add_scp", function( weapon, ply )
@@ -262,7 +262,7 @@ hook.Add( "WeaponEquip", "vkxscp096:add_scp", function( weapon, ply )
 	--  add in the list
 	scps_096[#scps_096 + 1] = ply
 	sync_scps_list()
-	guthscp.debug( "VKX SCP 096", "%s is a new SCP-096 instance", ply:GetName() )
+	MODULE:debug( "%s is a new SCP-096 instance", ply:GetName() )
 end )
 
 concommand.Add( "vkx_scp096_print_scps", function( ply )
