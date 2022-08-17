@@ -38,9 +38,13 @@ This addon is available on the Workshop [here](https://steamcommunity.com/shared
 Be sure to have installed [[SCP] Guthen's Addons Base](https://steamcommunity.com/sharedfiles/filedetails/?id=2139692777) on your server. Verify that you can open the configuration menu with `guthscp_menu` in your game console.
 
 ### "I enrage SCP-096 even though I didn't looked at him!"
-The detection system is far from being perfect as you can tell. 
+There are two implemented detection methods: `Serverside` (the one by default) & `Clientside`.
 
-Other than that, the method used is choose to be secure, an other solution (= client check 096's head on his screen and send whenever or not he should enrage him to the server) might gives better (or even perfect) results but will open the doors to cheats (just by not sending the message to the server), so for the moment we have the secure and weak option.
+`Clientside` gives better results that `Serverside` since it's directly checking if SCP-096's face is visible on the screen of the player
+whereas the `Serverside` detection compares approximately direction angles of SCP-096 and the potential target.
+
+Before choosing `Clientside`, **beware!**, this method can be exploited by cheaters in order to prevent them from triggerring SCP-096
+and you (and I) can't do much against that (and Bots players WILL NOT trigger SCP-096).
 
 *Pro Tip: When SCP-096 is near, look as low/high to the floor/ceiling as you can*
 
