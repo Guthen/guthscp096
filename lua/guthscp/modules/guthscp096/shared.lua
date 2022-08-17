@@ -1,4 +1,4 @@
-local MODULE = guthscp.modules.vkxscp096
+local MODULE = guthscp.modules.guthscp096
 
 MODULE.NET_SCPS_LIST_BITS = 5  --  allows 31 differents players in the list (which hopefully won't happen :x)
 
