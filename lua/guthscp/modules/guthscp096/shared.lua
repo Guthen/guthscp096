@@ -5,7 +5,7 @@ MODULE.NET_SCPS_LIST_BITS = 5  --  allows 31 differents players in the list (whi
 --  functions
 function MODULE.is_scp_096( ply )
 	ply = ply or CLIENT and LocalPlayer() 
-	return ply:HasWeapon( "vkx_scp_096" )
+	return ply:HasWeapon( "guthscp_096" )
 end
 
 function MODULE.is_scp_096_enraged( ply )

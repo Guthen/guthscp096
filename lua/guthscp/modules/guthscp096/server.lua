@@ -36,7 +36,7 @@ function MODULE.enrage_scp_096( ply )
 		guthscp.sound.play( ply, guthscp.configs.guthscp096.sound_trigger, guthscp.configs.guthscp096.sound_hear_distance )
 	end
 
-	local weap = ply:GetWeapon( "vkx_scp_096" )
+	local weap = ply:GetWeapon( "guthscp_096" )
 	if IsValid( weap ) then
 		ply:SetActiveWeapon( weap )
 		weap:SendWeaponAnim( ACT_VM_SECONDARYATTACK )
@@ -118,7 +118,7 @@ function MODULE.unrage_scp_096( ply, no_sound )
 	end
 
 	--  select weapon
-	local weap = ply:GetWeapon( "vkx_scp_096" )
+	local weap = ply:GetWeapon( "guthscp_096" )
 	if IsValid( weap ) then 
 		timer.Simple( .5, function()
 			if not IsValid( weap ) then return end
@@ -250,7 +250,7 @@ local function refresh_scps_list()
 end
 
 hook.Add( "WeaponEquip", "guthscp096:add_scp", function( weapon, ply )
-	if not ( weapon:GetClass() == "vkx_scp_096" ) then return end
+	if not ( weapon:GetClass() == "guthscp_096" ) then return end
 
 	--  is in list
 	for i, v in ipairs( scps_096 ) do
