@@ -240,7 +240,7 @@ local function refresh_scps_list()
 	scps_096 = {}
 
 	for i, v in ipairs( player.GetAll() ) do
-		if guthscp.is_scp_096( v ) then
+		if MODULE.is_scp_096( v ) then
 			scps_096[#scps_096 + 1] = v
 		end
 	end
