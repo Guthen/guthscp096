@@ -237,6 +237,7 @@ MODULE.menu = {
 				},
 			},
 			guthscp.config.create_apply_button(),
+			guthscp.config.create_reset_button(),
 		},
 		receive = function( form )
 			guthscp.config.apply( MODULE.id, form, {
