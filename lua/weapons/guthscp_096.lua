@@ -1,4 +1,8 @@
+local guthscp096 = guthscp.modules.guthscp096
+
+
 AddCSLuaFile()
+
 SWEP.PrintName = "SCP-096"
 SWEP.Author = "Vyrkx A.K.A. Guthen"
 SWEP.Instructions = "Left click to kill your targets and to break everything in your way. Right click to put your hands on your face (first person only)."
@@ -36,11 +40,12 @@ function SWEP:PrimaryAttack()
 	if not SERVER then return end
 	
 	local ply = self:GetOwner()
-	if not guthscp.modules.guthscp096.is_scp_096_enraged( ply ) then 
+	if not guthscp096.is_scp_096_enraged( ply ) then 
 		self:SetNextPrimaryFire( CurTime() + .1 )
 		return 
 	end
 	
+	--  get target entity
 	local start_pos = ply:EyePos()
 	local tr = util.TraceHull( {
 		start = start_pos,
@@ -53,7 +58,7 @@ function SWEP:PrimaryAttack()
 	local target = tr.Entity
 
 	--  kill target
-	if target:IsPlayer() and guthscp.modules.guthscp096.is_scp_096_target( target, ply ) then
+	if target:IsPlayer() and guthscp096.is_scp_096_target( target, ply ) then
 		target:TakeDamage( 500, ply, self )
 	--  destroy entities
 	else
@@ -72,7 +77,7 @@ end
 if SERVER then
 	function SWEP:Equip( ply )
 		if IsValid( ply ) and ply:IsPlayer() then
-			guthscp.modules.guthscp096.unrage_scp_096( ply )
+			guthscp096.unrage_scp_096( ply )
 		end
 	end
 
@@ -90,7 +95,7 @@ if SERVER then
 			self.is_first_time_passed = true
 		end
 		
-		if guthscp.modules.guthscp096.is_scp_096_enraged( ply ) then
+		if guthscp096.is_scp_096_enraged( ply ) then
 			local time = CurTime() - ply:GetNWInt( "VKX:096EnragedTime", 0 )
 			local factor = time / guthscp.configs.guthscp096.trigger_time
 			local shake_scale, shake_radius = guthscp.configs.guthscp096.shake_scale, guthscp.configs.guthscp096.shake_radius
@@ -121,9 +126,7 @@ function SWEP:SecondaryAttack()
         local ply = self:GetOwner()
         if not IsValid( ply ) then return end
 
-        if not guthscp.modules.guthscp096.is_scp_096_enraged( ply ) then
---[[             ply:GetViewModel():SendViewModelMatchingSequence( self:LookupSequence( "run" ) )
-        else ]]
+        if not guthscp096.is_scp_096_enraged( ply ) then
             self:SendWeaponAnim( ACT_VM_IDLE )
         end
     end )

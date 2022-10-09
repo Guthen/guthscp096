@@ -1,29 +1,4 @@
-local MODULE = guthscp.modules.guthscp096
-
---  refresh SCPs-096
-local scps_096 = {}
-function MODULE.get_scps_096()
-	return scps_096
-end
-
-net.Receive( "guthscp096:refresh_list", function( len )
-	scps_096 = {}
-
-	--  get scps
-	local count = net.ReadUInt( MODULE.NET_SCPS_LIST_BITS )
-	for i = 1, count do
-		scps_096[i] = net.ReadEntity()
-	end
-	MODULE:debug( "received %d SCPs", count )
-end )
-
-local function refresh_scps_list( is_unreliable )
-	net.Start( "guthscp096:refresh_list", is_unreliable )
-	net.SendToServer()
-	MODULE:debug( "requesting a refresh of the SCPs list %s", is_unreliable and "(unreliable)" or "" )
-end
-
-hook.Add( "InitPostEntity", "guthscp096:refresh_list", refresh_scps_list )
+local guthscp096 = guthscp.modules.guthscp096
 
 --  receive SCPs who target me
 local target_by_scps = {}
@@ -44,7 +19,7 @@ hook.Add( "Think", "guthscp096:trigger", function()
 	local ply = LocalPlayer()
 	
 	--  homemade cooldown
-	if guthscp.configs.guthscp096.detection_method == MODULE.DETECTION_METHODS.CLIENTSIDE and not ( guthscp.configs.guthscp096.ignore_scps and guthscp.is_scp( ply ) ) and not MODULE.is_scp_096( ply ) then
+	if guthscp.configs.guthscp096.detection_method == guthscp096.DETECTION_METHODS.CLIENTSIDE and not ( guthscp.configs.guthscp096.ignore_scps and guthscp.is_scp( ply ) ) and not guthscp096.is_scp_096( ply ) then
 		local dt = FrameTime()
 		current_update_time = current_update_time + dt
 		if current_update_time >= guthscp.configs.guthscp096.detection_update_time then
@@ -52,6 +27,7 @@ hook.Add( "Think", "guthscp096:trigger", function()
 			
 			attraction_eye_angles = nil
 
+			local scps_096 = guthscp096.get_scps_096()
 			local is_unreliable = guthscp.configs.guthscp096.detection_update_time < .1
 	
 			--  trigger detection
@@ -59,7 +35,7 @@ hook.Add( "Think", "guthscp096:trigger", function()
 			local ply_head_pos = ply_head_id and ply:GetBonePosition( ply_head_id ) or ply:EyePos()
 		
 			for i, scp in ipairs( scps_096 ) do
-				if not IsValid( scp ) or not MODULE.is_scp_096( scp ) then 
+				if not IsValid( scp ) or not guthscp096.is_scp_096( scp ) then 
 					refresh_scps_list( is_unreliable )
 					continue
 				end
@@ -98,7 +74,7 @@ hook.Add( "Think", "guthscp096:trigger", function()
 					net.Start( "guthscp096:trigger", is_unreliable )
 						net.WriteEntity( scp )
 					net.SendToServer()
-					MODULE:debug( "triggering %q.. %s", scp:GetName(), is_unreliable and "(unreliable)" or "" )
+					guthscp096:debug( "triggering %q.. %s", scp:GetName(), is_unreliable and "(unreliable)" or "" )
 				else
 					attraction_eye_angles = ( scp_head_pos - ply_head_pos ):Angle()
 					attraction_force = 1 - math.min( 1, ply_head_pos:DistToSqr( scp_head_pos ) / ( guthscp.configs.guthscp096.attraction_dist ^ 2 ) )
@@ -137,7 +113,7 @@ net.Receive( "guthscp096:target", function()
 	end
 end )
 
-function MODULE.get_scp_096_targets()
+function guthscp096.get_scp_096_targets()
 	return targets_keys
 end
 
@@ -150,7 +126,7 @@ local render_pathfinding = CreateClientConVar( "guthscp_096_render_path_finding"
 local indicator_color = Color( 220, 62, 62 )
 hook.Add( "PreDrawHalos", "guthscp096:target", function()
 	if not render_halo:GetBool() then return end
-	if not MODULE.is_scp_096() then return end
+	if not guthscp096.is_scp_096() then return end
 
 	halo.Add( targets_keys, indicator_color, 2, 2, 1, true, true )
 end )
@@ -161,7 +137,7 @@ local sphere_radius_sqr = sphere_radius ^ 2
 local last_path_time = CurTime()
 hook.Add( "PostDrawTranslucentRenderables", "guthscp096:target", function()
 	if not render_line:GetBool() then return end
-	if not MODULE.is_scp_096() then return end
+	if not guthscp096.is_scp_096() then return end
 
 	render.SetColorMaterial()
 	local start_pos = LocalPlayer():GetPos()
@@ -210,11 +186,11 @@ end )
 local enrage_time, scale, factor, end_scale = 0, 0, 1.1, 0
 hook.Add( "HUDPaint", "zzz_vkxscp096:rage", function()
 	if not render_pp:GetBool() then return end
-	if not MODULE.is_scp_096() then return end
+	if not guthscp096.is_scp_096() then return end
 
 	local ply = LocalPlayer()
 	--  enraged
-	if MODULE.is_scp_096_enraged( ply ) then
+	if guthscp096.is_scp_096_enraged( ply ) then
 		enrage_time = enrage_time + FrameTime()
 		factor = math.min( 1.1, enrage_time / guthscp.configs.guthscp096.trigger_time )
 
