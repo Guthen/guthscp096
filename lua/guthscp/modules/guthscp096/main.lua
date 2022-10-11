@@ -110,7 +110,7 @@ MODULE.menu = {
 				type = "CheckBox",
 				name = "Ignore SCPs",
 				id = "ignore_scps",
-				desc = "If checked, SCP-096 won't be triggered by 'SCP Teams' defined in 'guthscpbase' config and by the 'Ignore Teams' below. If unchecked, only the 'Ignore Teams' below won't trigger SCP-096",
+				desc = "If checked, SCP-096 won't be triggered by 'SCP Teams' defined in the 'Base' config. The 'Ignore Teams' below won't trigger SCP-096 in both cases",
 				default = true,
 			},
 			guthscp.config.create_teams_element( {
