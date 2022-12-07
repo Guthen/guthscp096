@@ -1,7 +1,5 @@
 local guthscp096 = guthscp.modules.guthscp096
 
-guthscp096.NET_SCPS_LIST_BITS = 5  --  allows 31 differents players in the list (which hopefully won't happen :x)
-
 --  scps filter
 guthscp096.filter = guthscp.players_filter:new( "guthscp096" )
 if SERVER then
