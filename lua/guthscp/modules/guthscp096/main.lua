@@ -108,6 +108,13 @@ MODULE.menu = {
 			},
 			{
 				type = "CheckBox",
+				name = "Trigger on Damaged",
+				id = "trigger_on_damaged",
+				desc = "If checked, SCP-096 can be triggered by other players if they damage him",
+				default = false,
+			},
+			{
+				type = "CheckBox",
 				name = "Ignore SCPs",
 				id = "ignore_scps",
 				desc = "If checked, SCP-096 won't be triggered by 'SCP Teams' defined in the 'Base' config. The 'Ignore Teams' below won't trigger SCP-096 in both cases",

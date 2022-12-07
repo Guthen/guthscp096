@@ -1,4 +1,5 @@
 local guthscp096 = guthscp.modules.guthscp096
+local config = guthscp.configs.guthscp096
 
 util.AddNetworkString( "guthscp096:target" )
 util.AddNetworkString( "guthscp096:trigger" )
@@ -337,6 +338,21 @@ hook.Add( "PlayerShouldTakeDamage", "guthscp096:invinsible", function( ply, atta
 	if guthscp096.is_scp_096( ply ) and guthscp.configs.guthscp096.immortal then
 		return false
 	end
+end )
+
+hook.Add( "PostEntityTakeDamage", "test", function( target, dmg, is_took )
+	if not config.trigger_on_damaged then return end
+
+	--  check target
+	if not target:IsPlayer() or not guthscp096.is_scp_096( target ) then return end
+
+	--  check attacker
+	local attacker = dmg:GetAttacker()
+	if not IsValid( attacker ) or not attacker:IsPlayer() then return end
+	if config.ignore_scps and guthscp.is_scp( attacker ) then return end
+
+	--  trigger
+	guthscp096.trigger_scp_096( attacker, target )
 end )
 
 hook.Add( "PlayerDisconnected", "guthscp096:disconnect", function( ply )
