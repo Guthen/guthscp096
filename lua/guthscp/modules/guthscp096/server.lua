@@ -25,15 +25,15 @@ function guthscp096.enrage_scp_096( ply )
 	end
 
 	--  setup
-	ply:SetWalkSpeed( triggered_scps[ply].run_speed * guthscp.configs.guthscp096.enrage_speed_scale )
+	ply:SetWalkSpeed( triggered_scps[ply].run_speed * config.enrage_speed_scale )
 	ply:SetRunSpeed( ply:GetWalkSpeed() )
-	ply:SetJumpPower( triggered_scps[ply].jump_power * guthscp.configs.guthscp096.enrage_jump_scale )
+	ply:SetJumpPower( triggered_scps[ply].jump_power * config.enrage_jump_scale )
 
 	ply:SetNWBool( "VKX:Is096Enraged", true )
 	ply:SetNWInt( "VKX:096EnragedTime", CurTime() )
 	ply:Freeze( true )
-	if #guthscp.configs.guthscp096.sound_trigger > 0 then
-		guthscp.sound.play( ply, guthscp.configs.guthscp096.sound_trigger, guthscp.configs.guthscp096.sound_hear_distance )
+	if #config.sound_trigger > 0 then
+		guthscp.sound.play( ply, config.sound_trigger, config.sound_hear_distance )
 	end
 
 	local weap = ply:GetWeapon( "guthscp_096" )
@@ -42,21 +42,21 @@ function guthscp096.enrage_scp_096( ply )
 		weap:SendWeaponAnim( ACT_VM_SECONDARYATTACK )
 	end
 
-	timer.Create( "VKX:Triggering096" .. ply:AccountID(), guthscp.configs.guthscp096.trigger_time, 1, function()
+	timer.Create( "VKX:Triggering096" .. ply:AccountID(), config.trigger_time, 1, function()
 		if not IsValid( ply ) or not guthscp096.is_scp_096( ply ) then return end
 		ply:Freeze( false )
 
 		--  stop trigger sound
-		if guthscp.configs.guthscp096.sound_stop_trigger_sound then
-			guthscp.sound.stop( ply, guthscp.configs.guthscp096.sound_trigger )
+		if config.sound_stop_trigger_sound then
+			guthscp.sound.stop( ply, config.sound_trigger )
 		end
 		
 		--  play enrage sound
-		guthscp.sound.play( ply, guthscp.configs.guthscp096.sound_enrage, guthscp.configs.guthscp096.sound_hear_distance, true )
+		guthscp.sound.play( ply, config.sound_enrage, config.sound_hear_distance, true )
 
 		--  unrage
-		if guthscp.configs.guthscp096.unrage_on_time then
-			timer.Create( "VKX:Idling096" .. ply:AccountID(), guthscp.configs.guthscp096.enrage_time, 1, function()
+		if config.unrage_on_time then
+			timer.Create( "VKX:Idling096" .. ply:AccountID(), config.enrage_time, 1, function()
 				if not IsValid( ply ) or not guthscp096.is_scp_096( ply ) then return end
 				guthscp096.unrage_scp_096( ply )
 			end )
@@ -77,9 +77,9 @@ function guthscp096.trigger_scp_096( target, ply )
 	local should = hook.Run( "guthscp096:should_trigger", target, ply )
 	if should == false then return end
 
-	guthscp.sound.play_client( target, guthscp.configs.guthscp096.sound_looked )
+	guthscp.sound.play_client( target, config.sound_looked )
 	if CurTime() - ( triggered_scps[ply] and triggered_scps[ply].looked_sound_cooldown or 1 ) > .5 then
-		guthscp.sound.play_client( ply, guthscp.configs.guthscp096.sound_looked )
+		guthscp.sound.play_client( ply, config.sound_looked )
 		if triggered_scps[ply] then
 			triggered_scps[ply].looked_sound_cooldown = CurTime()
 		end
@@ -97,9 +97,9 @@ end
 
 --  sounds
 function guthscp096.stop_scp_096_sounds( ply )
-	guthscp.sound.stop( ply, guthscp.configs.guthscp096.sound_idle )
-	guthscp.sound.stop( ply, guthscp.configs.guthscp096.sound_enrage ) 
-	guthscp.sound.stop( ply, guthscp.configs.guthscp096.sound_trigger )
+	guthscp.sound.stop( ply, config.sound_idle )
+	guthscp.sound.stop( ply, config.sound_enrage ) 
+	guthscp.sound.stop( ply, config.sound_trigger )
 end
 
 --  unrage
@@ -113,7 +113,7 @@ function guthscp096.unrage_scp_096( ply, no_sound )
 	--  idle
 	if not no_sound and ply:Alive() then
 		timer.Simple( 0, function()
-			guthscp.sound.play( ply, guthscp.configs.guthscp096.sound_idle, guthscp.configs.guthscp096.sound_hear_distance, true )
+			guthscp.sound.play( ply, config.sound_idle, config.sound_hear_distance, true )
 		end )
 	end
 
@@ -237,7 +237,7 @@ concommand.Add( "guthscp_096_print_scps", function( ply )
 end )
 
 net.Receive( "guthscp096:trigger", function( len, ply )
-	if not ( guthscp.configs.guthscp096.detection_method == guthscp096.DETECTION_METHODS.CLIENTSIDE ) then return end
+	if not ( config.detection_method == guthscp096.DETECTION_METHODS.CLIENTSIDE ) then return end
 
 	local scp = net.ReadEntity()
 	if not IsValid( scp ) or not guthscp096.is_scp_096( scp ) then return end
@@ -251,14 +251,14 @@ timer.Create( "guthscp096:trigger", .1, 0, function()
 	if guthscp096.filter:get_players_count() == 0 then return end
 
 	--  trigger detection
-	if guthscp.configs.guthscp096.detection_method == guthscp096.DETECTION_METHODS.SERVERSIDE then 
+	if config.detection_method == guthscp096.DETECTION_METHODS.SERVERSIDE then 
 		local scps_096 = guthscp096.get_scps_096()
 
 		for i, ply in ipairs( player.GetAll() ) do
 			if not ply:Alive() or guthscp096.is_scp_096( ply ) then continue end
-			if guthscp.configs.guthscp096.ignore_scps and guthscp.is_scp( ply ) then continue end
+			if config.ignore_scps and guthscp.is_scp( ply ) then continue end
 			
-			local ply_head_id = ply:LookupBone( guthscp.configs.guthscp096.detection_head_bone )
+			local ply_head_id = ply:LookupBone( config.detection_head_bone )
 			local ply_head_pos = ply_head_id and ply:GetBonePosition( ply_head_id ) or ply:EyePos()
 	
 			for i, scp in ipairs( scps_096 ) do
@@ -268,13 +268,13 @@ timer.Create( "guthscp096:trigger", .1, 0, function()
 				if aim_dot >= 0 then continue end
 	
 				--  bones
-				local scp_head_id = scp:LookupBone( guthscp.configs.guthscp096.detection_head_bone )
+				local scp_head_id = scp:LookupBone( config.detection_head_bone )
 				local scp_head_pos = scp_head_id and scp:GetBonePosition( scp_head_id ) or scp:EyePos()
 	
 				--  angles
 				local ply_to_scp = ( scp_head_pos - ply_head_pos ):GetNormal()
 				local view_dot = ply:GetAimVector():Dot( ply_to_scp ) --  does ply see scp?
-				if view_dot > guthscp.configs.guthscp096.detection_angle then
+				if view_dot > config.detection_angle then
 					--  check obstacles
 					local scp_to_ply = ( ply_head_pos - scp_head_pos ):GetNormal()
 					local tr = util.TraceLine( {
@@ -335,7 +335,7 @@ if MedConfig then
 end
 
 hook.Add( "PlayerShouldTakeDamage", "guthscp096:invinsible", function( ply, attacker )
-	if guthscp096.is_scp_096( ply ) and guthscp.configs.guthscp096.immortal then
+	if guthscp096.is_scp_096( ply ) and config.immortal then
 		return false
 	end
 end )
@@ -365,7 +365,7 @@ end )
 
 hook.Add( "PlayerFootstep", "guthscp096:footstep", function( ply, pos, foot, sound, volume )
 	if guthscp096.is_scp_096( ply ) then
-		local sounds = guthscp.configs.guthscp096.sounds_footstep
+		local sounds = config.sounds_footstep
 		if #sounds == 0 then return end
 
 		ply:EmitSound( sounds[math.random( #sounds )], nil, nil, volume )
@@ -375,7 +375,7 @@ hook.Add( "PlayerFootstep", "guthscp096:footstep", function( ply, pos, foot, sou
 end )
 
 hook.Add( "guthscp096:should_trigger", "guthscp096:ignore_teams", function( target, ply )
-	if guthscp.configs.guthscp096.ignore_teams[guthscp.get_team_keyname( target:Team() )] then
+	if config.ignore_teams[guthscp.get_team_keyname( target:Team() )] then
 		return false
 	end
 end )

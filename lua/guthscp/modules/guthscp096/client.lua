@@ -1,4 +1,5 @@
 local guthscp096 = guthscp.modules.guthscp096
+local config = guthscp.configs.guthscp096
 
 --  receive SCPs who target me
 local target_by_scps = {}
@@ -14,24 +15,24 @@ local attraction_eye_angles, attraction_force
 
 local current_update_time = 0
 hook.Add( "Think", "guthscp096:trigger", function()
-	if not guthscp.configs.guthscp096 then return end --  wait for the config to be loaded
+	if not config then return end --  wait for the config to be loaded
 	
 	local ply = LocalPlayer()
 	
 	--  homemade cooldown
-	if guthscp.configs.guthscp096.detection_method == guthscp096.DETECTION_METHODS.CLIENTSIDE and not ( guthscp.configs.guthscp096.ignore_scps and guthscp.is_scp( ply ) ) and not guthscp096.is_scp_096( ply ) then
+	if config.detection_method == guthscp096.DETECTION_METHODS.CLIENTSIDE and not ( config.ignore_scps and guthscp.is_scp( ply ) ) and not guthscp096.is_scp_096( ply ) then
 		local dt = FrameTime()
 		current_update_time = current_update_time + dt
-		if current_update_time >= guthscp.configs.guthscp096.detection_update_time then
-			current_update_time = current_update_time - guthscp.configs.guthscp096.detection_update_time
+		if current_update_time >= config.detection_update_time then
+			current_update_time = current_update_time - config.detection_update_time
 			
 			attraction_eye_angles = nil
 
 			local scps_096 = guthscp096.get_scps_096()
-			local is_unreliable = guthscp.configs.guthscp096.detection_update_time < .1
+			local is_unreliable = config.detection_update_time < .1
 	
 			--  trigger detection
-			local ply_head_id = ply:LookupBone( guthscp.configs.guthscp096.detection_head_bone )
+			local ply_head_id = ply:LookupBone( config.detection_head_bone )
 			local ply_head_pos = ply_head_id and ply:GetBonePosition( ply_head_id ) or ply:EyePos()
 		
 			for i, scp in ipairs( scps_096 ) do
@@ -43,7 +44,7 @@ hook.Add( "Think", "guthscp096:trigger", function()
 				if target_by_scps[scp] then continue end
 		
 				--  get scp head pos
-				local scp_head_id = scp:LookupBone( guthscp.configs.guthscp096.detection_head_bone )
+				local scp_head_id = scp:LookupBone( config.detection_head_bone )
 				local scp_head_pos = scp_head_id and scp:GetBonePosition( scp_head_id ) or scp:EyePos()
 				local scp_to_ply = ( ply_head_pos - scp_head_pos ):GetNormal()
 				
@@ -77,7 +78,7 @@ hook.Add( "Think", "guthscp096:trigger", function()
 					guthscp096:debug( "triggering %q.. %s", scp:GetName(), is_unreliable and "(unreliable)" or "" )
 				else
 					attraction_eye_angles = ( scp_head_pos - ply_head_pos ):Angle()
-					attraction_force = 1 - math.min( 1, ply_head_pos:DistToSqr( scp_head_pos ) / ( guthscp.configs.guthscp096.attraction_dist ^ 2 ) )
+					attraction_force = 1 - math.min( 1, ply_head_pos:DistToSqr( scp_head_pos ) / ( config.attraction_dist ^ 2 ) )
 					--print( "not on screen" )
 				end
 			end
@@ -87,8 +88,8 @@ hook.Add( "Think", "guthscp096:trigger", function()
 	end
 
 	--  drag player view towards 096 face 
-	if guthscp.configs.guthscp096.attraction_enabled and attraction_eye_angles then 
-		local angle = LerpAngle( FrameTime() * guthscp.configs.guthscp096.attraction_speed * attraction_force, ply:EyeAngles(), attraction_eye_angles )
+	if config.attraction_enabled and attraction_eye_angles then 
+		local angle = LerpAngle( FrameTime() * config.attraction_speed * attraction_force, ply:EyeAngles(), attraction_eye_angles )
 		angle.r = 0
 		ply:SetEyeAngles( angle )
 	end
@@ -192,7 +193,7 @@ hook.Add( "HUDPaint", "zzz_vkxscp096:rage", function()
 	--  enraged
 	if guthscp096.is_scp_096_enraged( ply ) then
 		enrage_time = enrage_time + FrameTime()
-		factor = math.min( 1.1, enrage_time / guthscp.configs.guthscp096.trigger_time )
+		factor = math.min( 1.1, enrage_time / config.trigger_time )
 
 		scale = Lerp( FrameTime() * 3, scale, 1 )
 		end_scale = Lerp( FrameTime() * factor, end_scale, 1 ) * .25
