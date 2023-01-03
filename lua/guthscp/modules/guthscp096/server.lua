@@ -248,7 +248,7 @@ end )
 --  think
 local red, green = Color( 255, 0, 0 ), Color( 0, 255, 0 )
 timer.Create( "guthscp096:trigger", .1, 0, function()
-	if guthscp096.filter:get_players_count() == 0 then return end
+	if guthscp096.filter:get_count() == 0 then return end
 
 	--  trigger detection
 	if config.detection_method == guthscp096.DETECTION_METHODS.SERVERSIDE then 

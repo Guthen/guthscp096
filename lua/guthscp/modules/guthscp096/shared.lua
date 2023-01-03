@@ -7,11 +7,11 @@ if SERVER then
 	guthscp096.filter:listen_weapon_users( "guthscp_096" )  --  being SCP-096 just mean a player having the weapon 
 
 	--  stop sounds on removed
-	guthscp096.filter.event_player_removed:add_listener( "guthscp096:stop_sounds", guthscp096.stop_scp_096_sounds )
+	guthscp096.filter.event_removed:add_listener( "guthscp096:stop_sounds", guthscp096.stop_scp_096_sounds )
 end
 
 function guthscp096.get_scps_096()
-	return guthscp096.filter:get_players_list()
+	return guthscp096.filter:get_list()
 end
 
 --  functions
@@ -20,7 +20,7 @@ function guthscp096.is_scp_096( ply )
 		ply = LocalPlayer() 
 	end
 
-	return guthscp096.filter:is_player_in( ply )
+	return guthscp096.filter:is_in( ply )
 end
 
 function guthscp096.is_scp_096_enraged( ply )
