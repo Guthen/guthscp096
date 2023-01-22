@@ -11,7 +11,7 @@ if SERVER then
 end
 
 function guthscp096.get_scps_096()
-	return guthscp096.filter:get_list()
+	return guthscp096.filter:get_entities()
 end
 
 --  functions

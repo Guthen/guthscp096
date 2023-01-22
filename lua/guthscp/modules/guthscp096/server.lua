@@ -98,7 +98,7 @@ end
 --  sounds
 function guthscp096.stop_scp_096_sounds( ply )
 	guthscp.sound.stop( ply, config.sound_idle )
-	guthscp.sound.stop( ply, config.sound_enrage ) 
+	guthscp.sound.stop( ply, config.sound_enrage )
 	guthscp.sound.stop( ply, config.sound_trigger )
 end
 
