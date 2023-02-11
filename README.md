@@ -53,6 +53,11 @@ Be sure to have installed [Guthen SCP Content](https://steamcommunity.com/worksh
 
 Otherwise, check the configured sounds paths in the configuration menu. 
 
+### "The target halos are not drawing!"
+First, be sure that you have set the console variable `guthscp_096_render_targets_halo` to `1`.
+
+If the halos are fading out after some time, it's may be caused by an other addon drawing post-processing effects, especially those using the `DrawMotionBlur` function. [SethHUD](https://www.gmodstore.com/market/view/seth-hud) can do this if you have `SethHUD.CustomerConfig.HealthEffects` set to `true`, just disable it or remove the line of code with the `DrawMotionBlur` function call.
+
 ### "Which PlayerModel should I use?"
 You are not limited to a particular Player Model but if you want a good one, try [this](https://steamcommunity.com/sharedfiles/filedetails/?id=958509894) one. 
 
