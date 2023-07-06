@@ -185,7 +185,7 @@ hook.Add( "PostDrawTranslucentRenderables", "guthscp096:target", function()
 end )
 
 local enrage_time, scale, factor, end_scale = 0, 0, 1.1, 0
-hook.Add( "HUDPaint", "zzz_vkxscp096:rage", function()
+hook.Add( "HUDPaint", "zzz_guthscp096:post_process", function()
 	if not render_pp:GetBool() then return end
 	if not guthscp096.is_scp_096() then return end
 
