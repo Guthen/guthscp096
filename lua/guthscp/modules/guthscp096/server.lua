@@ -242,6 +242,9 @@ net.Receive( "guthscp096:trigger", function( len, ply )
 	local scp = net.ReadEntity()
 	if not IsValid( scp ) or not guthscp096.is_scp_096( scp ) then return end
 
+	--  check PVS
+	if not ply:TestPVS( scp ) then return end
+
 	guthscp096.trigger_scp_096( ply, scp )
 end )
 
