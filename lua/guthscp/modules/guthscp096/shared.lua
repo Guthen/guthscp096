@@ -27,5 +27,5 @@ function guthscp096.is_scp_096( ply )
 end
 
 function guthscp096.is_scp_096_enraged( ply )
-	return ply:GetNWBool( "VKX:Is096Enraged", false )
+	return ply:GetNWBool( "guthscp096:is_enraged", false )
 end

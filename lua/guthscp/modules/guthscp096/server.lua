@@ -29,8 +29,8 @@ function guthscp096.enrage_scp_096( ply )
 	ply:SetRunSpeed( ply:GetWalkSpeed() )
 	ply:SetJumpPower( triggered_scps[ply].jump_power * config.enrage_jump_scale )
 
-	ply:SetNWBool( "VKX:Is096Enraged", true )
-	ply:SetNWInt( "VKX:096EnragedTime", CurTime() )
+	ply:SetNWBool( "guthscp096:is_enraged", true )
+	ply:SetNWInt( "guthscp096:enrage_time", CurTime() )
 	ply:Freeze( true )
 	if #config.sound_trigger > 0 then
 		guthscp.sound.play( ply, config.sound_trigger, config.sound_hear_distance )
@@ -42,7 +42,7 @@ function guthscp096.enrage_scp_096( ply )
 		weap:SendWeaponAnim( ACT_VM_SECONDARYATTACK )
 	end
 
-	timer.Create( "VKX:Triggering096" .. ply:AccountID(), config.trigger_time, 1, function()
+	timer.Create( "guthscp096:triggering" .. ply:AccountID(), config.trigger_time, 1, function()
 		if not IsValid( ply ) or not guthscp096.is_scp_096( ply ) then return end
 		ply:Freeze( false )
 
@@ -56,7 +56,7 @@ function guthscp096.enrage_scp_096( ply )
 
 		--  unrage
 		if config.unrage_on_time then
-			timer.Create( "VKX:Idling096" .. ply:AccountID(), config.enrage_time, 1, function()
+			timer.Create( "guthscp096:idling" .. ply:AccountID(), config.enrage_time, 1, function()
 				if not IsValid( ply ) or not guthscp096.is_scp_096( ply ) then return end
 				guthscp096.unrage_scp_096( ply )
 			end )
@@ -107,8 +107,8 @@ function guthscp096.unrage_scp_096( ply, no_sound )
 	guthscp096.stop_scp_096_sounds( ply )
 
 	--  timers
-	timer.Remove( "VKX:Triggering096" .. ply:AccountID() )
-	timer.Remove( "VKX:Idling096" .. ply:AccountID() )
+	timer.Remove( "guthscp096:triggering" .. ply:AccountID() )
+	timer.Remove( "guthscp096:idling" .. ply:AccountID() )
 
 	--  idle
 	if not no_sound and ply:Alive() then
@@ -134,8 +134,8 @@ function guthscp096.unrage_scp_096( ply, no_sound )
 
 	--  unset values
 	ply:Freeze( false )
-	ply:SetNWBool( "VKX:Is096Enraged", false )
-	ply:SetNWInt( "VKX:096EnragedTime", 0 )
+	ply:SetNWBool( "guthscp096:is_enraged", false )
+	ply:SetNWInt( "guthscp096:enrage_time", 0 )
 	if triggered_scps[ply] then
 		ply:SetWalkSpeed( triggered_scps[ply].walk_speed )
 		ply:SetRunSpeed( triggered_scps[ply].run_speed )

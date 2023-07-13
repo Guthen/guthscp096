@@ -102,7 +102,7 @@ if SERVER then
 		end
 		
 		if guthscp096.is_scp_096_enraged( ply ) then
-			local time = CurTime() - ply:GetNWInt( "VKX:096EnragedTime", 0 )
+			local time = CurTime() - ply:GetNWInt( "guthscp096:enrage_time", 0 )
 			local factor = time / guthscp.configs.guthscp096.trigger_time
 			local shake_scale, shake_radius = guthscp.configs.guthscp096.shake_scale, guthscp.configs.guthscp096.shake_radius
 
