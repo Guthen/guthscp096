@@ -127,11 +127,9 @@ function SWEP:SecondaryAttack()
 
     self:SendWeaponAnim( ACT_VM_SECONDARYATTACK )
 	
-    timer.Simple( guthscp.configs.guthscp096.cover_cooldown, function()
-        if not IsValid( self ) then return end
-
-        local ply = self:GetOwner()
-        if not IsValid( ply ) then return end
+	local ply = self:GetOwner()
+    timer.Create( "guthscp096:end_cover" .. ply:AccountID(), 1.6, 1, function()
+        if not IsValid( self ) or not IsValid( ply ) then return end
 
         if not guthscp096.is_scp_096_enraged( ply ) then
             self:SendWeaponAnim( ACT_VM_IDLE )
