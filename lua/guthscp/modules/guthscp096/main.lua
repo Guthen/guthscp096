@@ -77,13 +77,13 @@ MODULE.menu = {
 				min = 0,
 			},
 			{
-			 	type = "NumWang",
-			 	name = "Keycard Level",
-			 	id = "keycard_level",
-			 	desc = "Compatibility with my keycard system. Set a keycard level to SCP-096's swep",
-			 	default = 5,
-			 	min = 0,
-			 	max = function( self, numwang )
+				type = "NumWang",
+				name = "Keycard Level",
+				id = "keycard_level",
+				desc = "Compatibility with my keycard system. Set a keycard level to SCP-096's swep",
+				default = 5,
+				min = 0,
+				max = function( self, numwang )
 					if self:is_disabled() then return 0 end
 					
 					return guthscp.modules.guthscpkeycard.max_keycard_level

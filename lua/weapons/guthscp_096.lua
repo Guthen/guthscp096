@@ -123,19 +123,19 @@ if SERVER then
 end
 
 function SWEP:SecondaryAttack()
-    if not SERVER then return end
+	if not SERVER then return end
 
-    self:SendWeaponAnim( ACT_VM_SECONDARYATTACK )
+	self:SendWeaponAnim( ACT_VM_SECONDARYATTACK )
 	
 	local ply = self:GetOwner()
-    timer.Create( "guthscp096:end_cover" .. ply:AccountID(), 1.6, 1, function()
-        if not IsValid( self ) or not IsValid( ply ) then return end
+	timer.Create( "guthscp096:end_cover" .. ply:AccountID(), 1.6, 1, function()
+		if not IsValid( self ) or not IsValid( ply ) then return end
 
-        if not guthscp096.is_scp_096_enraged( ply ) then
-            self:SendWeaponAnim( ACT_VM_IDLE )
-        end
-    end )
-    self:SetNextSecondaryFire( CurTime() + guthscp.configs.guthscp096.cover_cooldown )
+		if not guthscp096.is_scp_096_enraged( ply ) then
+			self:SendWeaponAnim( ACT_VM_IDLE )
+		end
+	end )
+	self:SetNextSecondaryFire( CurTime() + guthscp.configs.guthscp096.cover_cooldown )
 end
 
 if CLIENT and guthscp then
