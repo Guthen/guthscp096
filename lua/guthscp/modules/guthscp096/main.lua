@@ -126,6 +126,49 @@ MODULE.menu = {
 				desc = "All teams that can't trigger SCP-096.",
 				default = {},
 			} ),
+			--  weapon
+			{
+				type = "Category",
+				name = "Weapon"
+			},
+			{
+				type = "NumWang",
+				name = "Distance Unit",
+				id = "distance_unit",
+				desc = "Maximum distance where SCP-096 can attacks his targets. 1 meter ~= 40 unit",
+				default = 3 * 40, --  3 meter
+			},
+			{
+				type = "NumWang",
+				name = "Attack Hull Size",
+				id = "attack_hull_size",
+				desc = "Size of tolerance for targeting in units. The higher the number, the easier it is to aim, but the less precise it is",
+				default = 5,
+			},
+			{
+				type = "NumWang",
+				name = "Kill Cooldown",
+				id = "kill_cooldown",
+				desc = "Cooldown between attacks (left click)",
+				default = 0.3,
+				decimals = 2
+			},
+			{
+				type = "NumWang",
+				name = "Break Cooldown",
+				id = "break_cooldown",
+				desc = "Cooldown between entities breaks (left click)",
+				default = 0.5,
+				decimals = 2
+			},
+			{
+				type = "NumWang",
+				name = "Cover Cooldown",
+				id = "cover_cooldown",
+				desc = "Cooldown between head cover (right click)",
+				default = 1.6,
+				decimals = 2
+			},
 			--  detection
 			{
 				type = "Category",

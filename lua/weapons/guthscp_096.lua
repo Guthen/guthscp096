@@ -40,7 +40,6 @@ SWEP.WorldModel	= ""
 
 SWEP.GuthSCPLVL = 0
 
-local dist = 125
 function SWEP:PrimaryAttack()
 	if not SERVER then return end
 	
@@ -52,27 +51,29 @@ function SWEP:PrimaryAttack()
 	
 	--  get target entity
 	local start_pos = ply:EyePos()
-	local tr = util.TraceHull( {
-		start = start_pos,
-		endpos = start_pos + ply:GetAimVector() * dist,
-		filter = ply,
-		mins = Vector( -10, -10, -10 ),
-		maxs = Vector( 10, 10, 10 ),
-		mask = MASK_SHOT_HULL,
-	} )
+	local tr = guthscp.world.player_trace_attack( 
+		ply, 
+		guthscp.configs.guthscp096.distance_unit, 
+		Vector( 
+			guthscp.configs.guthscp096.attack_hull_size, 
+			guthscp.configs.guthscp096.attack_hull_size, 
+			guthscp.configs.guthscp096.attack_hull_size 
+		) 
+	)
 	local target = tr.Entity
 
 	--  kill target
 	if target:IsPlayer() and guthscp096.is_scp_096_target( target, ply ) then
 		target:TakeDamage( 500, ply, self )
+		self:SetNextPrimaryFire( CurTime() + guthscp.configs.guthscp096.kill_cooldown )
 	--  destroy entities
 	else
 		guthscp.break_entities_at_player_trace( tr )
+		self:SetNextPrimaryFire( CurTime() + guthscp.configs.guthscp096.break_cooldown )
 	end
 	
 	--  attack anim
 	self:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
-	self:SetNextPrimaryFire( CurTime() + .3 )
 end
 
 function SWEP:Initialize()
@@ -125,7 +126,8 @@ function SWEP:SecondaryAttack()
     if not SERVER then return end
 
     self:SendWeaponAnim( ACT_VM_SECONDARYATTACK )
-    timer.Simple( 1.6, function()
+	
+    timer.Simple( guthscp.configs.guthscp096.cover_cooldown, function()
         if not IsValid( self ) then return end
 
         local ply = self:GetOwner()
@@ -135,7 +137,7 @@ function SWEP:SecondaryAttack()
             self:SendWeaponAnim( ACT_VM_IDLE )
         end
     end )
-    self:SetNextSecondaryFire( CurTime() + 1.6 )
+    self:SetNextSecondaryFire( CurTime() + guthscp.configs.guthscp096.cover_cooldown )
 end
 
 if CLIENT and guthscp then
