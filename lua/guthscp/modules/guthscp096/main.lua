@@ -136,14 +136,14 @@ MODULE.menu = {
 				name = "Distance Unit",
 				id = "distance_unit",
 				desc = "Maximum distance where SCP-096 can attacks his targets. 1 meter ~= 40 unit",
-				default = 3 * 40, --  3 meter
+				default = 3.5 * 40, --  3.5 meter
 			},
 			{
 				type = "NumWang",
 				name = "Attack Hull Size",
 				id = "attack_hull_size",
 				desc = "Size of tolerance for targeting in units. The higher the number, the easier it is to aim, but the less precise it is",
-				default = 5,
+				default = 10,
 			},
 			{
 				type = "NumWang",
