@@ -309,6 +309,12 @@ MODULE.menu = {
 			icon = "icon16/information.png",
 			url = "https://github.com/Guthen/guthscp096/blob/master/README.md",
 		},
+		"Modules",
+		{
+			text = "Certurix's SCP-096 Bag",
+			icon = "icon16/brick_link.png",
+			url = "https://github.com/Certurix/ctx096bag",
+		},
 		"Social",
 		{
 			text = "Github",
