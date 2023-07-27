@@ -120,12 +120,13 @@ MODULE.menu = {
 				desc = "If checked, SCP-096 won't be triggered by 'SCP Teams' defined in the 'Base' config. The 'Ignore Teams' below won't trigger SCP-096 in both cases",
 				default = true,
 			},
-			guthscp.config.create_teams_element( {
+			{
+				type = "Teams",
 				name = "Ignore Teams",
 				id = "ignore_teams",
 				desc = "All teams that can't trigger SCP-096.",
 				default = {},
-			} ),
+			},
 			--  weapon
 			{
 				type = "Category",
