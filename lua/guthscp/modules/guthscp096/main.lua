@@ -24,10 +24,7 @@ MODULE.menu = {
 	--  config
 	config = {
 		form = {
-			{
-				type = "Category",
-				name = "General",
-			},
+			"General",
 			{
 				type = "NumWang",
 				name = "Screen Shake Scale",
@@ -128,10 +125,7 @@ MODULE.menu = {
 				default = {},
 			},
 			--  weapon
-			{
-				type = "Category",
-				name = "Weapon"
-			},
+			"Weapon",
 			{
 				type = "NumWang",
 				name = "Distance Unit",
@@ -171,10 +165,7 @@ MODULE.menu = {
 				decimals = 2
 			},
 			--  detection
-			{
-				type = "Category",
-				name = "Trigger Detection",
-			},
+			"Trigger Detection",
 			{
 				type = "NumWang",
 				name = "Update Time",
@@ -183,14 +174,16 @@ MODULE.menu = {
 				default = .1,
 				decimals = 2,
 			},
-			guthscp.config.create_enum_element( MODULE.DETECTION_METHODS, {
+			{
+				type = "Enum",
 				name = "Detection Method",
 				id = "detection_method",
 				desc = [[Method used to trigger SCP-096 while looking at his face.
 'Clientside' method lighten the calculations on the server in spite of the players and gives a better result than the 'Serverside' method, but it's exploitable by 'cheaters' (and you (and I) can't do so much about it), so they can just prevent themselves from triggering SCP-096, you are warned! Since it's clientside, it also doesn't work with Bots. 
 'Serverside' method is the secured (not exploitable) but unperfect option, it might trigger if you look a bit lower than his face.]],
+				enum = MODULE.DETECTION_METHODS,
 				default = MODULE.DETECTION_METHODS.SERVERSIDE,
-			} ),
+			},
 			{
 				type = "TextEntry",
 				name = "Head Bone Name",
@@ -209,10 +202,7 @@ MODULE.menu = {
 				max = 1
 			},
 			--  attraction
-			{
-				type = "Category",
-				name = "Attraction",
-			},
+			"Attraction",
 			{
 				type = "CheckBox",
 				name = "Attraction Enabled",
@@ -236,10 +226,7 @@ MODULE.menu = {
 				default = 8 * 40, -- 8 meters
 			},
 			--  sounds
-			{
-				type = "Category",
-				name = "Sounds",
-			},
+			"Sounds",
 			{
 				type = "NumWang",
 				name = "Hear Distance",
