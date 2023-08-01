@@ -26,7 +26,7 @@ MODULE.menu = {
 		form = {
 			"General",
 			{
-				type = "NumWang",
+				type = "Number",
 				name = "Screen Shake Scale",
 				id = "shake_scale",
 				desc = "Scale the screen shake intensity when SCP-096 is enraged. Set this to 0 to disable screen shakes",
@@ -34,7 +34,7 @@ MODULE.menu = {
 				decimals = 1,
 			},
 			{
-				type = "NumWang",
+				type = "Number",
 				name = "Screen Shake Radius",
 				id = "shake_radius",
 				desc = "In game units, radius of the screen shake when SCP-096 is enraged. Players in the radius will be affected by the screen shakes",
@@ -42,7 +42,7 @@ MODULE.menu = {
 				decimals = 1,
 			},
 			{
-				type = "NumWang",
+				type = "Number",
 				name = "Enrage Speed Scale",
 				id = "enrage_speed_scale",
 				desc = "Scale the run speed when SCP-096 is enraged",
@@ -50,7 +50,7 @@ MODULE.menu = {
 				decimals = 1,
 			},
 			{
-				type = "NumWang",
+				type = "Number",
 				name = "Enrage Jump Scale",
 				id = "enrage_jump_scale",
 				desc = "Scale the jump power when SCP-096 is enraged",
@@ -58,7 +58,7 @@ MODULE.menu = {
 				decimals = 1,
 			},
 			{
-				type = "NumWang",
+				type = "Number",
 				name = "Trigger Time",
 				id = "trigger_time",
 				desc = "Time taken during the trigger state to entering in the enrage state, should depends on the trigger sound",
@@ -66,7 +66,7 @@ MODULE.menu = {
 				min = 0,
 			},
 			{
-				type = "NumWang",
+				type = "Number",
 				name = "Enrage Time",
 				id = "enrage_time",
 				desc = "Time taken during the enrage state to entering in the idle state, should depends on the enrage sound",
@@ -74,7 +74,7 @@ MODULE.menu = {
 				min = 0,
 			},
 			{
-				type = "NumWang",
+				type = "Number",
 				name = "Keycard Level",
 				id = "keycard_level",
 				desc = "Compatibility with my keycard system. Set a keycard level to SCP-096's swep",
@@ -90,28 +90,28 @@ MODULE.menu = {
 				end,
 			},
 			{
-				type = "CheckBox",
+				type = "Bool",
 				name = "Unrage on Time",
 				id = "unrage_on_time",
 				desc = "Should SCP-096 unrage with the time? Allow the use of 'Enrage Time' above. If unchecked, SCP-096 will only unrage when he killed all his targets. If checked, SCP-096 will unrage with time or when all his targets are killed",
 				default = false,
 			},
 			{
-				type = "CheckBox",
+				type = "Bool",
 				name = "Immortal",
 				id = "immortal",
 				desc = "If checked, SCP-096 can't take damage",
 				default = true,
 			},
 			{
-				type = "CheckBox",
+				type = "Bool",
 				name = "Trigger on Damaged",
 				id = "trigger_on_damaged",
 				desc = "If checked, SCP-096 can be triggered by other players if they damage him",
 				default = false,
 			},
 			{
-				type = "CheckBox",
+				type = "Bool",
 				name = "Ignore SCPs",
 				id = "ignore_scps",
 				desc = "If checked, SCP-096 won't be triggered by 'SCP Teams' defined in the 'Base' config. The 'Ignore Teams' below won't trigger SCP-096 in both cases",
@@ -127,21 +127,21 @@ MODULE.menu = {
 			--  weapon
 			"Weapon",
 			{
-				type = "NumWang",
+				type = "Number",
 				name = "Distance Unit",
 				id = "distance_unit",
 				desc = "Maximum distance where SCP-096 can attacks his targets. 1 meter ~= 40 unit",
 				default = 3.5 * 40, --  3.5 meter
 			},
 			{
-				type = "NumWang",
+				type = "Number",
 				name = "Attack Hull Size",
 				id = "attack_hull_size",
 				desc = "Size of tolerance for targeting in units. The higher the number, the easier it is to aim, but the less precise it is",
 				default = 10,
 			},
 			{
-				type = "NumWang",
+				type = "Number",
 				name = "Kill Cooldown",
 				id = "kill_cooldown",
 				desc = "Cooldown between attacks (left click)",
@@ -149,7 +149,7 @@ MODULE.menu = {
 				decimals = 2
 			},
 			{
-				type = "NumWang",
+				type = "Number",
 				name = "Break Cooldown",
 				id = "break_cooldown",
 				desc = "Cooldown between entities breaks (left click)",
@@ -157,7 +157,7 @@ MODULE.menu = {
 				decimals = 2
 			},
 			{
-				type = "NumWang",
+				type = "Number",
 				name = "Cover Cooldown",
 				id = "cover_cooldown",
 				desc = "Cooldown between head cover (right click)",
@@ -167,7 +167,7 @@ MODULE.menu = {
 			--  detection
 			"Trigger Detection",
 			{
-				type = "NumWang",
+				type = "Number",
 				name = "Update Time",
 				id = "detection_update_time",
 				desc = "Set the Cooldown between each Trigger Detection Update, in seconds",
@@ -185,14 +185,14 @@ MODULE.menu = {
 				default = MODULE.DETECTION_METHODS.SERVERSIDE,
 			},
 			{
-				type = "TextEntry",
+				type = "String",
 				name = "Head Bone Name",
 				id = "detection_head_bone",
 				desc = "The Head Bone's Name to use for detecting obstacles between the potential target & SCP-096",
 				default = "ValveBiped.Bip01_Head1",
 			},
 			{
-				type = "NumWang",
+				type = "Number",
 				name = "Detection Angle",
 				id = "detection_angle",
 				desc = "Detection Method must be set to 'Serverside'! Cosine of the victim's field of view angle used to trigger SCP-096. Increasing this value will make the detection threshold smaller and vice-versa. By default, set to 0.55 which is equivalent to an angle of 56°.",
@@ -204,14 +204,14 @@ MODULE.menu = {
 			--  attraction
 			"Attraction",
 			{
-				type = "CheckBox",
+				type = "Bool",
 				name = "Attraction Enabled",
 				id = "attraction_enabled",
 				desc = "Detection Method must be set to 'Clientside'! If checked, non-SCPs players will be attracted to look at SCP-096's face when they are near enough",
 				default = true,
 			},
 			{
-				type = "NumWang",
+				type = "Number",
 				name = "Attraction Speed",
 				id = "attraction_speed",
 				desc = "Scale the speed of the attraction",
@@ -219,7 +219,7 @@ MODULE.menu = {
 				decimals = 2,
 			},
 			{
-				type = "NumWang",
+				type = "Number",
 				name = "Attraction Distance",
 				id = "attraction_dist",
 				desc = "Maximum distance where SCP-096's attraction take effect. 1 meter ~= 40 unit",
@@ -228,49 +228,49 @@ MODULE.menu = {
 			--  sounds
 			"Sounds",
 			{
-				type = "NumWang",
+				type = "Number",
 				name = "Hear Distance",
 				id = "sound_hear_distance",
 				desc = "Maximum distance where you can hear SCP-096's sounds",
 				default = 2048,
 			},
 			{
-				type = "CheckBox",
+				type = "Bool",
 				name = "Stop Trigger Sound",
 				id = "sound_stop_trigger_sound",
 				desc = "Should we force stop the trigger sound when the trigger timer has finished?",
 				default = false,
 			},
 			{
-				type = "TextEntry",
+				type = "String",
 				name = "Idle",
 				id = "sound_idle",
 				desc = "Looped-sound played in idle state",
 				default = "guthen_scp/096/idle.ogg",
 			},
 			{
-				type = "TextEntry",
+				type = "String",
 				name = "Enrage",
 				id = "sound_enrage",
 				desc = "Looped-sound played in enrage state",
 				default = "guthen_scp/096/scream.ogg",
 			},
 			{
-				type = "TextEntry",
+				type = "String",
 				name = "Trigger",
 				id ="sound_trigger",
 				desc = "Sound played in trigger state",
 				default = "guthen_scp/096/angered.ogg",
 			},
 			{
-				type = "TextEntry",
+				type = "String",
 				name = "Looked",
 				id = "sound_looked",
 				desc = "Sound played on the player who looked at SCP-096",
 				default = "guthen_scp/096/triggered.ogg",
 			},
 			{
-				type = "TextEntry[]",
+				type = "String[]",
 				name = "Footstep",
 				id = "sounds_footstep",
 				desc = "Sounds randomly played when SCP-096 move. Remove all elements to disable the custom footstep sounds",
