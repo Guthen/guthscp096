@@ -34,7 +34,7 @@ Contains a SWEP, of class `guthscp_096`, designed for multiplayer:
 + `guthscp_096_render_post_process <0 or 1>`: Render post process effects as SCP-096, really expensive on performance but damn cool
 + `guthscp_096_render_path_finding <0 or 1>`: Render path toward targets as SCP-096. It's a rudimentary method, it's not 100% relatable.
 
-## Additional Modules
+## Extra Add-ons
 + [[GuthSCP] SCP-096 Bag System (ctx096bag)](https://steamcommunity.com/sharedfiles/filedetails/?id=3035662778)
 + [Project SCRAMBLE | Arctic Version](https://steamcommunity.com/sharedfiles/filedetails/?id=2988971057)
 + [Project SCRAMBLE | MW Version](https://steamcommunity.com/sharedfiles/filedetails/?id=2995171251)
