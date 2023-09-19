@@ -29,10 +29,10 @@ Contains a SWEP, of class `guthscp_096`, designed for multiplayer:
     + [[GuthSCP] Keycard](https://steamcommunity.com/sharedfiles/filedetails/?id=3034740776)
 
 ## Convars
-+ `guthscp_096_render_targets_halo <0 or 1>`: Render a halo on the SCP-096 targets, more expensive than a line
-+ `guthscp_096_render_targets_line <0 or 1>`: Render a line between you and the SCP-096 targets 
-+ `guthscp_096_render_post_process <0 or 1>`: Render post process effects as SCP-096, really expensive on performance but damn cool
-+ `guthscp_096_render_path_finding <0 or 1>`: Render path toward targets as SCP-096. It's a rudimentary method, it's not 100% relatable.
++ `guthscp_096_render_targets_halo <0 or 1>` (client): Render a halo on the SCP-096 targets, more expensive than a line
++ `guthscp_096_render_targets_line <0 or 1>` (client): Render a line between you and the SCP-096 targets 
++ `guthscp_096_render_post_process <0 or 1>` (client): Render post process effects as SCP-096, really expensive on performance but damn cool
++ `guthscp_096_render_path_finding <0 or 1>` (client): Render path toward targets as SCP-096. It's a rudimentary method, it's not 100% relatable.
 
 ## Extra Add-ons
 + [[GuthSCP] SCP-096 Bag System (ctx096bag)](https://steamcommunity.com/sharedfiles/filedetails/?id=3035662778)
