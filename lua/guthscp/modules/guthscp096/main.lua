@@ -127,6 +127,13 @@ MODULE.menu = {
 			--  weapon
 			"Weapon",
 			{
+				type = "String",
+				name = "Hold Type",
+				id = "hold_type",
+				desc = "Set the weapon's hold type, see the full list here: https://wiki.facepunch.com/gmod/Hold_Types. It can be used to fix 3rd person animations on some SCP-096 models",
+				default = "normal",
+			},
+			{
 				type = "Number",
 				name = "Distance Unit",
 				id = "distance_unit",

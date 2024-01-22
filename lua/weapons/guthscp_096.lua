@@ -77,7 +77,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:Initialize()
-	self:SetHoldType( "normal" )
+	self:SetHoldType( guthscp.configs.guthscp096.hold_type )
 end
 
 if SERVER then
