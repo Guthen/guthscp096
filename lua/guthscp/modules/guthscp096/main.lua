@@ -312,7 +312,7 @@ MODULE.menu = {
 		{
 			text = "Steam",
 			icon = "guthscp/icons/steam.png",
-			url = "https://steamcommunity.com/sharedfiles/filedetails/?id=2641523360"
+			url = "https://steamcommunity.com/sharedfiles/filedetails/?id=3034739264"
 		},
 		{
 			text = "Discord",
