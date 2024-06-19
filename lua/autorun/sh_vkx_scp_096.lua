@@ -1,3 +1,15 @@
+--  warn for new version
+local message = "[IMPORTANT] You are using an old version of Guthen's SCP 096 addon, please consider upgrading to the new version. You can find the new addons in this collection: https://steamcommunity.com/sharedfiles/filedetails/?id=3034749707"
+MsgC( Color( 255, 0, 0 ), message, "\n" )
+if CLIENT then 
+    hook.Add( "InitPostEntity", "GuthSCP:NewSCP096Version", function()
+        timer.Simple( 5, function() 
+            if not LocalPlayer():IsAdmin() then return end
+            chat.AddText( Color( 161, 154, 255), message )
+        end )
+    end )
+end
+
 if not GuthSCP or not GuthSCP.Config then
 	error( "[VKX SCP 096] '[SCP] Guthen's Addons Base' (https://steamcommunity.com/sharedfiles/filedetails/?id=2139692777) is not installed on the server, the addon won't work as intended, please install the base addon." )
 	return
