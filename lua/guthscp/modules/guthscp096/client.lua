@@ -1,35 +1,9 @@
-if not GuthSCP or not GuthSCP.Config then
-	return
-end
-
---  refresh SCPs-096
-local scps_096 = {}
-function GuthSCP.getSCP096s()
-	return scps_096
-end
-
-net.Receive( "vkxscp096:refresh_list", function( len )
-	scps_096 = {}
-
-	--  get scps
-	local count = net.ReadUInt( GuthSCP.NET_SCPS_LIST_BITS )
-	for i = 1, count do
-		scps_096[i] = net.ReadEntity()
-	end
-	GuthSCP.debugPrint( "VKX SCP 096", "Received %d SCPs", count )
-end )
-
-local function refresh_scps_list( is_unreliable )
-	net.Start( "vkxscp096:refresh_list", is_unreliable )
-	net.SendToServer()
-	GuthSCP.debugPrint( "VKX SCP 096", "Requesting a refresh of the SCPs list %s", is_unreliable and "(unreliable)" or "" )
-end
-
-hook.Add( "InitPostEntity", "vkxscp096:refresh_list", refresh_scps_list )
+local guthscp096 = guthscp.modules.guthscp096
+local config = guthscp.configs.guthscp096
 
 --  receive SCPs who target me
 local target_by_scps = {}
-net.Receive( "vkxscp096:trigger", function( len )
+net.Receive( "guthscp096:trigger", function( len )
 	local scp = net.ReadEntity()
 	if not IsValid( scp ) then return end
 
@@ -40,28 +14,29 @@ local scr_w, scr_h = ScrW(), ScrH()
 local attraction_eye_angles, attraction_force
 
 local current_update_time = 0
-hook.Add( "Think", "vkxscp096:trigger", function()
-	if not GuthSCP.Config.vkxscp096 then return end --  wait for the config to be loaded
+hook.Add( "Think", "guthscp096:trigger", function()
+	if not config then return end --  wait for the config to be loaded
 	
 	local ply = LocalPlayer()
 	
 	--  homemade cooldown
-	if GuthSCP.Config.vkxscp096.detection_method == GuthSCP.DETECTION_METHODS.CLIENTSIDE and not ( GuthSCP.Config.vkxscp096.ignore_scps and GuthSCP.isSCP( ply ) ) and not GuthSCP.isSCP096( ply ) then
+	if config.detection_method == guthscp096.DETECTION_METHODS.CLIENTSIDE and not ( config.ignore_scps and guthscp.is_scp( ply ) ) and not guthscp096.is_scp_096( ply ) then
 		local dt = FrameTime()
 		current_update_time = current_update_time + dt
-		if current_update_time >= GuthSCP.Config.vkxscp096.detection_update_time then
-			current_update_time = current_update_time - GuthSCP.Config.vkxscp096.detection_update_time
+		if current_update_time >= config.detection_update_time then
+			current_update_time = current_update_time - config.detection_update_time
 			
 			attraction_eye_angles = nil
 
-			local is_unreliable = GuthSCP.Config.vkxscp096.detection_update_time < .1
+			local scps_096 = guthscp096.get_scps_096()
+			local is_unreliable = config.detection_update_time < .1
 	
 			--  trigger detection
-			local ply_head_id = ply:LookupBone( GuthSCP.Config.vkxscp096.detection_head_bone )
+			local ply_head_id = ply:LookupBone( config.detection_head_bone )
 			local ply_head_pos = ply_head_id and ply:GetBonePosition( ply_head_id ) or ply:EyePos()
 		
 			for i, scp in ipairs( scps_096 ) do
-				if not IsValid( scp ) or not GuthSCP.isSCP096( scp ) then 
+				if not IsValid( scp ) or not guthscp096.is_scp_096( scp ) then 
 					refresh_scps_list( is_unreliable )
 					continue
 				end
@@ -69,7 +44,7 @@ hook.Add( "Think", "vkxscp096:trigger", function()
 				if target_by_scps[scp] then continue end
 		
 				--  get scp head pos
-				local scp_head_id = scp:LookupBone( GuthSCP.Config.vkxscp096.detection_head_bone )
+				local scp_head_id = scp:LookupBone( config.detection_head_bone )
 				local scp_head_pos = scp_head_id and scp:GetBonePosition( scp_head_id ) or scp:EyePos()
 				local scp_to_ply = ( ply_head_pos - scp_head_pos ):GetNormal()
 				
@@ -97,13 +72,13 @@ hook.Add( "Think", "vkxscp096:trigger", function()
 				local screen_pos = scp_head_pos:ToScreen()
 				if screen_pos.visible and screen_pos.x > 0 and screen_pos.x < scr_w and screen_pos.y > 0 and screen_pos.y < scr_h then
 					--print( "on screen" )
-					net.Start( "vkxscp096:trigger", is_unreliable )
+					net.Start( "guthscp096:trigger", is_unreliable )
 						net.WriteEntity( scp )
 					net.SendToServer()
-					GuthSCP.debugPrint( "VKX SCP 096", "Triggering %q.. %s", scp:GetName(), is_unreliable and "(unreliable)" or "" )
+					guthscp096:debug( "triggering %q.. %s", scp:GetName(), is_unreliable and "(unreliable)" or "" )
 				else
 					attraction_eye_angles = ( scp_head_pos - ply_head_pos ):Angle()
-					attraction_force = 1 - math.min( 1, ply_head_pos:DistToSqr( scp_head_pos ) / ( GuthSCP.Config.vkxscp096.attraction_dist ^ 2 ) )
+					attraction_force = 1 - math.min( 1, ply_head_pos:DistToSqr( scp_head_pos ) / ( config.attraction_dist ^ 2 ) )
 					--print( "not on screen" )
 				end
 			end
@@ -113,8 +88,8 @@ hook.Add( "Think", "vkxscp096:trigger", function()
 	end
 
 	--  drag player view towards 096 face 
-	if GuthSCP.Config.vkxscp096.attraction_enabled and attraction_eye_angles then 
-		local angle = LerpAngle( FrameTime() * GuthSCP.Config.vkxscp096.attraction_speed * attraction_force, ply:EyeAngles(), attraction_eye_angles )
+	if config.attraction_enabled and attraction_eye_angles then 
+		local angle = LerpAngle( FrameTime() * config.attraction_speed * attraction_force, ply:EyeAngles(), attraction_eye_angles )
 		angle.r = 0
 		ply:SetEyeAngles( angle )
 	end
@@ -123,7 +98,7 @@ end )
 
 --  targets
 local targets, targets_keys = {}, {}
-net.Receive( "vkxscp096:target", function()
+net.Receive( "guthscp096:target", function()
 	local ply = net.ReadEntity()
 	
 	--  add target
@@ -139,20 +114,20 @@ net.Receive( "vkxscp096:target", function()
 	end
 end )
 
-function GuthSCP.getSCP096Targets()
+function guthscp096.get_scp_096_targets()
 	return targets_keys
 end
 
 --  render
-local render_halo = CreateClientConVar( "vkx_scp096_render_targets_halo", "1", true, false, "Render a halo on the SCP-096 targets, more expensive than a line" )
-local render_line = CreateClientConVar( "vkx_scp096_render_targets_line", "0", true, false, "Render a line between you and the SCP-096 targets" )
-local render_pp = CreateClientConVar( "vkx_scp096_render_post_process", "1", true, false, "Render post process effects as SCP-096, really expensive on performance but damn cool" )
-local render_pathfinding = CreateClientConVar( "vkx_scp096_render_path_finding", "0", true, false, "Render path toward targets as SCP-096. It's a rudimentary method, it's not 100% relatable." )
+local render_halo = CreateClientConVar( "guthscp_096_render_targets_halo", "1", true, false, "Render a halo on the SCP-096 targets, more expensive than a line" )
+local render_line = CreateClientConVar( "guthscp_096_render_targets_line", "0", true, false, "Render a line between you and the SCP-096 targets" )
+local render_pp = CreateClientConVar( "guthscp_096_render_post_process", "1", true, false, "Render post process effects as SCP-096, really expensive on performance but damn cool" )
+local render_pathfinding = CreateClientConVar( "guthscp_096_render_path_finding", "0", true, false, "Render path toward targets as SCP-096. It's a rudimentary method, it's not 100% relatable." )
 
 local indicator_color = Color( 220, 62, 62 )
-hook.Add( "PreDrawHalos", "vkxscp096:target", function()
+hook.Add( "PreDrawHalos", "guthscp096:target", function()
 	if not render_halo:GetBool() then return end
-	if not GuthSCP.isSCP096() then return end
+	if not guthscp096.is_scp_096() then return end
 
 	halo.Add( targets_keys, indicator_color, 2, 2, 1, true, true )
 end )
@@ -161,9 +136,9 @@ local new_point_interval = 5 --  every 5 seconds
 local sphere_radius = 16
 local sphere_radius_sqr = sphere_radius ^ 2
 local last_path_time = CurTime()
-hook.Add( "PostDrawTranslucentRenderables", "vkxscp096:target", function()
+hook.Add( "PostDrawTranslucentRenderables", "guthscp096:target", function()
 	if not render_line:GetBool() then return end
-	if not GuthSCP.isSCP096() then return end
+	if not guthscp096.is_scp_096() then return end
 
 	render.SetColorMaterial()
 	local start_pos = LocalPlayer():GetPos()
@@ -210,15 +185,15 @@ hook.Add( "PostDrawTranslucentRenderables", "vkxscp096:target", function()
 end )
 
 local enrage_time, scale, factor, end_scale = 0, 0, 1.1, 0
-hook.Add( "HUDPaint", "zzz_vkxscp096:rage", function()
+hook.Add( "HUDPaint", "zzz_guthscp096:post_process", function()
 	if not render_pp:GetBool() then return end
-	if not GuthSCP.isSCP096() then return end
+	if not guthscp096.is_scp_096() then return end
 
 	local ply = LocalPlayer()
 	--  enraged
-	if GuthSCP.isSCP096Enraged( ply ) then
+	if guthscp096.is_scp_096_enraged( ply ) then
 		enrage_time = enrage_time + FrameTime()
-		factor = math.min( 1.1, enrage_time / GuthSCP.Config.vkxscp096.trigger_time )
+		factor = math.min( 1.1, enrage_time / config.trigger_time )
 
 		scale = Lerp( FrameTime() * 3, scale, 1 )
 		end_scale = Lerp( FrameTime() * factor, end_scale, 1 ) * .25

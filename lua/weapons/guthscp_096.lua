@@ -1,3 +1,11 @@
+if not guthscp then
+	error( "guthscp096 - fatal error! https://github.com/Guthen/guthscpbase must be installed on the server!" )
+	return
+end
+
+local guthscp096 = guthscp.modules.guthscp096
+
+
 AddCSLuaFile()
 
 SWEP.PrintName = "SCP-096"
@@ -32,40 +40,50 @@ SWEP.WorldModel	= ""
 
 SWEP.GuthSCPLVL = 0
 
-local dist_sqr = 125 ^ 2
 function SWEP:PrimaryAttack()
 	if not SERVER then return end
 	
 	local ply = self:GetOwner()
-	if not GuthSCP.isSCP096Enraged( ply ) then 
+	if not guthscp096.is_scp_096_enraged( ply ) then 
 		self:SetNextPrimaryFire( CurTime() + .1 )
 		return 
 	end
 	
-	local tr = ply:GetEyeTrace()
+	--  get target entity
+	local start_pos = ply:EyePos()
+	local tr = guthscp.world.player_trace_attack( 
+		ply, 
+		guthscp.configs.guthscp096.distance_unit, 
+		Vector( 
+			guthscp.configs.guthscp096.attack_hull_size, 
+			guthscp.configs.guthscp096.attack_hull_size, 
+			guthscp.configs.guthscp096.attack_hull_size 
+		) 
+	)
 	local target = tr.Entity
 
 	--  kill target
-	if target:IsPlayer() and target:GetPos():DistToSqr( ply:GetPos() ) <= dist_sqr and GuthSCP.isSCP096Target( target, ply ) then
+	if target:IsPlayer() and guthscp096.is_scp_096_target( target, ply ) then
 		target:TakeDamage( 500, ply, self )
+		self:SetNextPrimaryFire( CurTime() + guthscp.configs.guthscp096.kill_cooldown )
 	--  destroy entities
-	elseif tr.HitPos:DistToSqr( ply:GetPos() ) <= dist_sqr then
-		GuthSCP.breakEntitiesAtPlayerTrace( tr )
+	else
+		guthscp.break_entities_at_player_trace( tr )
+		self:SetNextPrimaryFire( CurTime() + guthscp.configs.guthscp096.break_cooldown )
 	end
 	
 	--  attack anim
 	self:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
-	self:SetNextPrimaryFire( CurTime() + .3 )
 end
 
 function SWEP:Initialize()
-	self:SetHoldType( "normal" )
+	self:SetHoldType( guthscp.configs.guthscp096.hold_type )
 end
 
 if SERVER then
 	function SWEP:Equip( ply )
 		if IsValid( ply ) and ply:IsPlayer() then
-			GuthSCP.unrageSCP096( ply )
+			guthscp096.unrage_scp_096( ply )
 		end
 	end
 
@@ -77,16 +95,16 @@ if SERVER then
 	function SWEP:Think()
 		local ply = self:GetOwner()
 
-		self.GuthSCPLVL = GuthSCP.Config.vkxscp096.keycard_level or 0
+		self.GuthSCPLVL = guthscp.configs.guthscp096.keycard_level or 0
 		if not self.is_first_time_passed then
 			self:SendWeaponAnim( ACT_VM_IDLE )
 			self.is_first_time_passed = true
 		end
 		
-		if GuthSCP.isSCP096Enraged( ply ) then
-			local time = CurTime() - ply:GetNWInt( "VKX:096EnragedTime", 0 )
-			local factor = time / GuthSCP.Config.vkxscp096.trigger_time
-			local shake_scale, shake_radius = GuthSCP.Config.vkxscp096.shake_scale, GuthSCP.Config.vkxscp096.shake_radius
+		if guthscp096.is_scp_096_enraged( ply ) then
+			local time = CurTime() - ply:GetNWInt( "guthscp096:enrage_time", 0 )
+			local factor = time / guthscp.configs.guthscp096.trigger_time
+			local shake_scale, shake_radius = guthscp.configs.guthscp096.shake_scale, guthscp.configs.guthscp096.shake_radius
 
 			if factor <= 1 then
 				if shake_scale > 0 then
@@ -105,20 +123,21 @@ if SERVER then
 end
 
 function SWEP:SecondaryAttack()
-    if not SERVER then return end
+	if not SERVER then return end
 
-    self:SendWeaponAnim( ACT_VM_SECONDARYATTACK )
-    timer.Simple( 1.6, function()
-        if not IsValid( self ) then return end
+	self:SendWeaponAnim( ACT_VM_SECONDARYATTACK )
+	
+	local ply = self:GetOwner()
+	timer.Create( "guthscp096:end_cover" .. ply:AccountID(), 1.6, 1, function()
+		if not IsValid( self ) or not IsValid( ply ) then return end
 
-        local ply = self:GetOwner()
-        if not IsValid( ply ) then return end
+		if not guthscp096.is_scp_096_enraged( ply ) then
+			self:SendWeaponAnim( ACT_VM_IDLE )
+		end
+	end )
+	self:SetNextSecondaryFire( CurTime() + guthscp.configs.guthscp096.cover_cooldown )
+end
 
-        if not GuthSCP.isSCP096Enraged( ply ) then
---[[             ply:GetViewModel():SendViewModelMatchingSequence( self:LookupSequence( "run" ) )
-        else ]]
-            self:SendWeaponAnim( ACT_VM_IDLE )
-        end
-    end )
-    self:SetNextSecondaryFire( CurTime() + 1.6 )
+if CLIENT and guthscp then
+	guthscp.spawnmenu.add_weapon( SWEP, "SCPs" )
 end
