@@ -1,7 +1,7 @@
 local MODULE = {
 	name = "SCP-096",
 	author = "Guthen",
-	version = "2.1.0",
+	version = "2.1.1",
 	description = [[Be SCP-096 and kill anyone who angered you while seeing your face, either by throwing doors or props at them or by dismembering them!]],
 	icon = "icon16/status_offline.png",
 	version_url = "https://raw.githubusercontent.com/Guthen/guthscp096/update-to-guthscpbase-remaster/lua/guthscp/modules/guthscp096/main.lua",
@@ -342,6 +342,15 @@ MODULE.menu = {
 function MODULE:init()
 	--  porting old config file 
 	self:port_old_config_file( "guthscpbase/vkxscp096.json" )
+	
+	--  warn for old version
+	timer.Simple( 0, function()
+		if weapons.GetStored( "vkx_scp_096" ) then
+			local text = "The old version of this addon is currently running on this server. Please, delete the '[SCP] Enhanced SCP-096' addon to avoid any possible conflicts."
+			self:add_error( text )
+			self:error( text )
+		end
+	end )
 end
 
 guthscp.module.hot_reload( "guthscp096" )
