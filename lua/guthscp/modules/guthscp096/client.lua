@@ -139,7 +139,9 @@ local sphere_radius = 16
 local sphere_radius_sqr = sphere_radius ^ 2
 local last_path_time = CurTime()
 hook.Add( "PostDrawTranslucentRenderables", "guthscp096:target", function()
-	if not render_line:GetBool() then return end
+	local should_render_line = render_line:GetBool()
+	local should_render_pathfinding = render_pathfinding:GetBool()
+	if not should_render_line and not should_render_pathfinding then return end
 	if not guthscp096.is_scp_096() then return end
 
 	render.SetColorMaterial()
@@ -152,7 +154,7 @@ hook.Add( "PostDrawTranslucentRenderables", "guthscp096:target", function()
 		end
 
 		--  draw path
-		if render_pathfinding:GetBool() then
+		if should_render_pathfinding then
 			for i, point in ipairs( target.scp_096_path ) do
 				if point:DistToSqr( start_pos ) <= sphere_radius_sqr then
 					for j = i, 1, -1 do
@@ -179,8 +181,10 @@ hook.Add( "PostDrawTranslucentRenderables", "guthscp096:target", function()
 					target.scp_096_path[#target.scp_096_path + 1] = target:GetPos()
 				end
 			end
-		else
-			--  draw line between targets and you
+		end
+
+		--  draw line between targets and 096
+		if should_render_line then
 			render.DrawLine( start_pos, target:EyePos(), indicator_color )
 		end
 	end
