@@ -16,44 +16,44 @@ local attraction_eye_angles, attraction_force
 local current_update_time = 0
 hook.Add( "Think", "guthscp096:trigger", function()
 	if not config then return end --  wait for the config to be loaded
-	
+
 	local ply = LocalPlayer()
-	
+
 	--  homemade cooldown
 	if config.detection_method == guthscp096.DETECTION_METHODS.CLIENTSIDE and not ( config.ignore_scps and guthscp.is_scp( ply ) ) and not guthscp096.is_scp_096( ply ) then
 		local dt = FrameTime()
 		current_update_time = current_update_time + dt
 		if current_update_time >= config.detection_update_time then
 			current_update_time = current_update_time - config.detection_update_time
-			
+
 			attraction_eye_angles = nil
 
 			local scps_096 = guthscp096.get_scps_096()
 			local is_unreliable = config.detection_update_time < .1
-	
+
 			--  trigger detection
 			local ply_head_id = ply:LookupBone( config.detection_head_bone )
 			local ply_head_pos = ply_head_id and ply:GetBonePosition( ply_head_id ) or ply:EyePos()
-		
+
 			for i, scp in ipairs( scps_096 ) do
-				if not IsValid( scp ) or not guthscp096.is_scp_096( scp ) then 
+				if not IsValid( scp ) or not guthscp096.is_scp_096( scp ) then
 					refresh_scps_list( is_unreliable )
 					continue
 				end
 				if scp == ply then continue end
 				if target_by_scps[scp] then continue end
-		
+
 				--  get scp head pos
 				local scp_head_id = scp:LookupBone( config.detection_head_bone )
 				local scp_head_pos = scp_head_id and scp:GetBonePosition( scp_head_id ) or scp:EyePos()
 				local scp_to_ply = ( ply_head_pos - scp_head_pos ):GetNormal()
-				
+
 				local view_dot = scp:GetAimVector():Dot( scp_to_ply ) --  does ply is in scp field of view?
-				if view_dot <= 0 then 
+				if view_dot <= 0 then
 					--print( "don't look at each other" )
-					continue 
+					continue
 				end
-		
+
 				--  look for obstacles to 096
 				local tr = util.TraceLine( {
 					start = scp_head_pos,
@@ -63,11 +63,11 @@ hook.Add( "Think", "guthscp096:trigger", function()
 				} )
 				--debugoverlay.Cross( scp_head_pos, 1, .1 )
 				--debugoverlay.Line( scp_head_pos, scp_head_pos + scp_to_ply * 5000, .1 )
-				if not ( tr.Entity == ply ) then 
+				if tr.Entity ~= ply then
 					--print( "hit something else")
-					continue 
+					continue
 				end
-		
+
 				--  check if the head is on the screen
 				local screen_pos = scp_head_pos:ToScreen()
 				if screen_pos.visible and screen_pos.x > 0 and screen_pos.x < scr_w and screen_pos.y > 0 and screen_pos.y < scr_h then
@@ -88,7 +88,7 @@ hook.Add( "Think", "guthscp096:trigger", function()
 	end
 
 	--  drag player view towards 096 face 
-	if config.attraction_enabled and attraction_eye_angles then 
+	if config.attraction_enabled and attraction_eye_angles then
 		local angle = LerpAngle( FrameTime() * config.attraction_speed * attraction_force, ply:EyeAngles(), attraction_eye_angles )
 		angle.r = 0
 		ply:SetEyeAngles( angle )
@@ -100,16 +100,18 @@ end )
 local targets, targets_keys = {}, {}
 net.Receive( "guthscp096:target", function()
 	local ply = net.ReadEntity()
-	
-	--  add target
+
 	if IsValid( ply ) then
+		--  add target
 		targets[ply] = net.ReadBool() or nil
 		ply.scp_096_path = { ply:GetPos() }
 
 		targets_keys = table.GetKeys( targets )
-	--  clear targets
 	else
-		for i, v in ipairs( targets_keys ) do v.scp_096_path = nil end
+		--  clear targets
+		for _, target in ipairs( targets_keys ) do
+			target.scp_096_path = nil
+		end
 		targets, targets_keys = {}, {}
 	end
 end )
@@ -142,44 +144,44 @@ hook.Add( "PostDrawTranslucentRenderables", "guthscp096:target", function()
 
 	render.SetColorMaterial()
 	local start_pos = LocalPlayer():GetPos()
-	for i, v in ipairs( targets_keys ) do
-		--  draw line between targets and you
-		if not IsValid( v ) then
-			targets[v] = nil
+	for _, target in ipairs( targets_keys ) do
+		if not IsValid( target ) then
+			targets[target] = nil
 			targets_keys = table.GetKeys( targets )
 			return
 		end
 
 		--  draw path
 		if render_pathfinding:GetBool() then
-			for i, point in ipairs( v.scp_096_path ) do
+			for i, point in ipairs( target.scp_096_path ) do
 				if point:DistToSqr( start_pos ) <= sphere_radius_sqr then
 					for j = i, 1, -1 do
-						table.remove( v.scp_096_path, j )
+						table.remove( target.scp_096_path, j )
 					end
 				end
 
 				render.DrawSphere( point, sphere_radius, 30, 30, indicator_color )
-				if v.scp_096_path[i - 1] then
-					render.DrawLine( point, v.scp_096_path[i - 1], indicator_color )
+				if target.scp_096_path[i - 1] then
+					render.DrawLine( point, target.scp_096_path[i - 1], indicator_color )
 				end
 			end
 
-			if #v.scp_096_path == 0 then
-				render.DrawLine( start_pos, v:EyePos(), indicator_color )
+			if #target.scp_096_path == 0 then
+				render.DrawLine( start_pos, target:EyePos(), indicator_color )
 			else
-				render.DrawLine( v.scp_096_path[#v.scp_096_path], v:EyePos(), indicator_color )
+				render.DrawLine( target.scp_096_path[#target.scp_096_path], target:EyePos(), indicator_color )
 			end
 
 			--  new point
 			if CurTime() - last_path_time > new_point_interval then
 				last_path_time = CurTime()
-				if #v.scp_096_path == 0 or v.scp_096_path[#v.scp_096_path]:DistToSqr( v:GetPos() ) > sphere_radius_sqr then
-					v.scp_096_path[#v.scp_096_path + 1] = v:GetPos()
+				if #target.scp_096_path == 0 or target.scp_096_path[#target.scp_096_path]:DistToSqr( target:GetPos() ) > sphere_radius_sqr then
+					target.scp_096_path[#target.scp_096_path + 1] = target:GetPos()
 				end
 			end
 		else
-			render.DrawLine( start_pos, v:EyePos(), indicator_color )
+			--  draw line between targets and you
+			render.DrawLine( start_pos, target:EyePos(), indicator_color )
 		end
 	end
 end )

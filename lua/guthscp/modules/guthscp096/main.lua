@@ -83,7 +83,7 @@ MODULE.menu = {
 					min = 0,
 					max = function( self, numwang )
 						if self:is_disabled() then return 0 end
-						
+
 						return guthscp.modules.guthscpkeycard.max_keycard_level
 					end,
 					is_disabled = function( self, numwang )
@@ -271,7 +271,7 @@ MODULE.menu = {
 				{
 					type = "String",
 					name = "Trigger",
-					id ="sound_trigger",
+					id = "sound_trigger",
 					desc = "Sound played in trigger state",
 					default = "guthen_scp/096/angered.ogg",
 				},
@@ -342,7 +342,7 @@ MODULE.menu = {
 function MODULE:init()
 	--  porting old config file 
 	self:port_old_config_file( "guthscpbase/vkxscp096.json" )
-	
+
 	--  warn for old version
 	timer.Simple( 0, function()
 		if weapons.GetStored( "vkx_scp_096" ) then

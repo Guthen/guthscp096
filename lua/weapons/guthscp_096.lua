@@ -42,23 +42,22 @@ SWEP.GuthSCPLVL = 0
 
 function SWEP:PrimaryAttack()
 	if not SERVER then return end
-	
+
 	local ply = self:GetOwner()
-	if not guthscp096.is_scp_096_enraged( ply ) then 
+	if not guthscp096.is_scp_096_enraged( ply ) then
 		self:SetNextPrimaryFire( CurTime() + .1 )
-		return 
+		return
 	end
-	
+
 	--  get target entity
-	local start_pos = ply:EyePos()
-	local tr = guthscp.world.player_trace_attack( 
-		ply, 
-		guthscp.configs.guthscp096.distance_unit, 
-		Vector( 
-			guthscp.configs.guthscp096.attack_hull_size, 
-			guthscp.configs.guthscp096.attack_hull_size, 
-			guthscp.configs.guthscp096.attack_hull_size 
-		) 
+	local tr = guthscp.world.player_trace_attack(
+		ply,
+		guthscp.configs.guthscp096.distance_unit,
+		Vector(
+			guthscp.configs.guthscp096.attack_hull_size,
+			guthscp.configs.guthscp096.attack_hull_size,
+			guthscp.configs.guthscp096.attack_hull_size
+		)
 	)
 	local target = tr.Entity
 
@@ -71,7 +70,7 @@ function SWEP:PrimaryAttack()
 		guthscp.break_entities_at_player_trace( tr )
 		self:SetNextPrimaryFire( CurTime() + guthscp.configs.guthscp096.break_cooldown )
 	end
-	
+
 	--  attack anim
 	self:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
 end
@@ -100,7 +99,7 @@ if SERVER then
 			self:SendWeaponAnim( ACT_VM_IDLE )
 			self.is_first_time_passed = true
 		end
-		
+
 		if guthscp096.is_scp_096_enraged( ply ) then
 			local time = CurTime() - ply:GetNWInt( "guthscp096:enrage_time", 0 )
 			local factor = time / guthscp.configs.guthscp096.trigger_time
@@ -126,7 +125,7 @@ function SWEP:SecondaryAttack()
 	if not SERVER then return end
 
 	self:SendWeaponAnim( ACT_VM_SECONDARYATTACK )
-	
+
 	local ply = self:GetOwner()
 	timer.Create( "guthscp096:end_cover" .. ply:AccountID(), 1.6, 1, function()
 		if not IsValid( self ) or not IsValid( ply ) then return end

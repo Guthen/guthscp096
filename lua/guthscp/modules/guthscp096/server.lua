@@ -50,7 +50,7 @@ function guthscp096.enrage_scp_096( ply )
 		if config.sound_stop_trigger_sound then
 			guthscp.sound.stop( ply, config.sound_trigger )
 		end
-		
+
 		--  play enrage sound
 		guthscp.sound.play( ply, config.sound_enrage, config.sound_hear_distance, true )
 
@@ -118,16 +118,16 @@ function guthscp096.unrage_scp_096( ply, no_sound )
 	end
 
 	--  select weapon
-	local weap = ply:GetWeapon( "guthscp_096" )
-	if IsValid( weap ) then 
+	local weapon = ply:GetWeapon( "guthscp_096" )
+	if IsValid( weapon ) then
 		timer.Simple( .5, function()
-			if not IsValid( weap ) then return end
-			ply:SetActiveWeapon( weap )
+			if not IsValid( weapon ) then return end
+			ply:SetActiveWeapon( weapon )
 
 			--  cover the head
 			timer.Simple( .1, function()
-				if not IsValid( weap ) then return end
-				weap:SecondaryAttack()
+				if not IsValid( weapon ) then return end
+				weapon:SecondaryAttack()
 			end )
 		end )
 	end
@@ -150,7 +150,7 @@ function guthscp096.unrage_scp_096( ply, no_sound )
 		--  reset SCP's targets
 		net.Start( "guthscp096:target" )
 		net.Send( ply )
-		
+
 		triggered_scps[ply] = nil
 	end
 
@@ -228,7 +228,7 @@ concommand.Add( "guthscp_096_print_scps", function( ply )
 			text = text .. ( "%d: %s\n" ):format( i, v:GetName() )
 		end
 	end
-	
+
 	if IsValid( ply ) then
 		ply:PrintMessage( HUD_PRINTCONSOLE, text )
 	else
@@ -237,7 +237,7 @@ concommand.Add( "guthscp_096_print_scps", function( ply )
 end )
 
 net.Receive( "guthscp096:trigger", function( len, ply )
-	if not ( config.detection_method == guthscp096.DETECTION_METHODS.CLIENTSIDE ) then return end
+	if config.detection_method ~= guthscp096.DETECTION_METHODS.CLIENTSIDE then return end
 
 	local scp = net.ReadEntity()
 	if not IsValid( scp ) or not guthscp096.is_scp_096( scp ) then return end
@@ -249,61 +249,59 @@ net.Receive( "guthscp096:trigger", function( len, ply )
 end )
 
 --  think
-local red, green = Color( 255, 0, 0 ), Color( 0, 255, 0 )
 timer.Create( "guthscp096:trigger", .1, 0, function()
 	if guthscp096.filter:get_count() == 0 then return end
+	if config.detection_method ~= guthscp096.DETECTION_METHODS.SERVERSIDE then return end
 
 	--  trigger detection
-	if config.detection_method == guthscp096.DETECTION_METHODS.SERVERSIDE then 
-		local scps_096 = guthscp096.get_scps_096()
+	local scps_096 = guthscp096.get_scps_096()
 
-		for i, ply in ipairs( player.GetAll() ) do
-			if not ply:Alive() or guthscp096.is_scp_096( ply ) then continue end
-			if config.ignore_scps and guthscp.is_scp( ply ) then continue end
-			
-			local ply_head_id = ply:LookupBone( config.detection_head_bone )
-			local ply_head_pos = ply_head_id and ply:GetBonePosition( ply_head_id ) or ply:EyePos()
-	
-			for i, scp in ipairs( scps_096 ) do
-				if not scp:Alive() or guthscp096.is_scp_096_target( ply, scp ) then continue end
-	
-				local aim_dot = ply:GetAimVector():Dot( scp:GetAimVector() ) --  does ply and scp look at each other (avoid trigger when looking at his back)?
-				if aim_dot >= 0 then continue end
-	
-				--  bones
-				local scp_head_id = scp:LookupBone( config.detection_head_bone )
-				local scp_head_pos = scp_head_id and scp:GetBonePosition( scp_head_id ) or scp:EyePos()
-	
-				--  angles
-				local ply_to_scp = ( scp_head_pos - ply_head_pos ):GetNormal()
-				local view_dot = ply:GetAimVector():Dot( ply_to_scp ) --  does ply see scp?
-				if view_dot > config.detection_angle then
-					--  check obstacles
-					local scp_to_ply = ( ply_head_pos - scp_head_pos ):GetNormal()
-					local tr = util.TraceLine( {
-						start = scp_head_pos,
-						endpos = scp_head_pos + scp_to_ply * 5000,
-						filter = scp,
-						mask = MASK_VISIBLE_AND_NPCS, --  avoid traversable objects such as fences & windows
-					} )
-	
-					--debugoverlay.Text( tr.StartPos + Vector( 0, 0, 10 ), "in theoric view", .1 )
-					--debugoverlay.Line( tr.StartPos, tr.HitPos, .1, tr.Entity == ply and green or red )
-					if tr.Entity == ply then
-						guthscp096.trigger_scp_096( ply, scp )
-						--debugoverlay.Text( tr.StartPos + Vector( 0, 0, 20 ), "trigger!", .1 )
-					--else
-						--debugoverlay.Text( tr.StartPos + Vector( 0, 0, 20 ), "obstacle!", .1 )
-					end
+	for _, ply in ipairs( player.GetAll() ) do
+		if not ply:Alive() or guthscp096.is_scp_096( ply ) then continue end
+		if config.ignore_scps and guthscp.is_scp( ply ) then continue end
+
+		local ply_head_id = ply:LookupBone( config.detection_head_bone )
+		local ply_head_pos = ply_head_id and ply:GetBonePosition( ply_head_id ) or ply:EyePos()
+
+		for _, scp in ipairs( scps_096 ) do
+			if not scp:Alive() or guthscp096.is_scp_096_target( ply, scp ) then continue end
+
+			local aim_dot = ply:GetAimVector():Dot( scp:GetAimVector() ) --  does ply and scp look at each other (avoid trigger when looking at his back)?
+			if aim_dot >= 0 then continue end
+
+			--  bones
+			local scp_head_id = scp:LookupBone( config.detection_head_bone )
+			local scp_head_pos = scp_head_id and scp:GetBonePosition( scp_head_id ) or scp:EyePos()
+
+			--  angles
+			local ply_to_scp = ( scp_head_pos - ply_head_pos ):GetNormal()
+			local view_dot = ply:GetAimVector():Dot( ply_to_scp ) --  does ply see scp?
+			if view_dot > config.detection_angle then
+				--  check obstacles
+				local scp_to_ply = ( ply_head_pos - scp_head_pos ):GetNormal()
+				local tr = util.TraceLine( {
+					start = scp_head_pos,
+					endpos = scp_head_pos + scp_to_ply * 5000,
+					filter = scp,
+					mask = MASK_VISIBLE_AND_NPCS, --  avoid traversable objects such as fences & windows
+				} )
+
+				--debugoverlay.Text( tr.StartPos + Vector( 0, 0, 10 ), "in theoric view", .1 )
+				--debugoverlay.Line( tr.StartPos, tr.HitPos, .1, tr.Entity == ply and Color( 0, 255, 0 ) or Color( 255, 0, 0 ) )
+				if tr.Entity == ply then
+					guthscp096.trigger_scp_096( ply, scp )
+					--debugoverlay.Text( tr.StartPos + Vector( 0, 0, 20 ), "trigger!", .1 )
 				--else
-					--debugoverlay.Text( scp_head_pos + Vector( 0, 0, 20 ), "no trigger", .1 )
-					--debugoverlay.Text( scp_head_pos + Vector( 0, 0, 10 ), "not in theoric view", .1 )
+					--debugoverlay.Text( tr.StartPos + Vector( 0, 0, 20 ), "obstacle!", .1 )
 				end
-	
-				--debugoverlay.Text( scp_head_pos, "view dot: " .. tostring( math.Round( view_dot, 3 ) ) .. "> 0.55?", .1 )
-				--debugoverlay.Text( scp_head_pos - Vector( 0, 0, 10 ), "aim dot: " .. tostring( math.Round( aim_dot, 3 ) ) .. "< 0?", .1 )
-				--debugoverlay.Text( scp_head_pos - Vector( 0, 0, 20 ), "view angle: " .. tostring( math.Round( math.deg( math.acos( view_dot ) ) ), 3 ) .. "°", .1 )
+			--else
+				--debugoverlay.Text( scp_head_pos + Vector( 0, 0, 20 ), "no trigger", .1 )
+				--debugoverlay.Text( scp_head_pos + Vector( 0, 0, 10 ), "not in theoric view", .1 )
 			end
+
+			--debugoverlay.Text( scp_head_pos, "view dot: " .. tostring( math.Round( view_dot, 3 ) ) .. "> 0.55?", .1 )
+			--debugoverlay.Text( scp_head_pos - Vector( 0, 0, 10 ), "aim dot: " .. tostring( math.Round( aim_dot, 3 ) ) .. "< 0?", .1 )
+			--debugoverlay.Text( scp_head_pos - Vector( 0, 0, 20 ), "view angle: " .. tostring( math.Round( math.deg( math.acos( view_dot ) ) ), 3 ) .. "°", .1 )
 		end
 	end
 end )
@@ -316,7 +314,7 @@ hook.Add( "OnPlayerChangedTeam", "guthscp096:reset", function( ply, old_team, ne
 end )
 
 hook.Add( "DoPlayerDeath", "guthscp096:reset", function( ply, attacker, dmg_info )
-	if guthscp096.is_scp_096( ply ) then 
+	if guthscp096.is_scp_096( ply ) then
 		guthscp096.unrage_scp_096( ply, true )
 	else
 		guthscp096.remove_from_scp_096_targets( ply )
@@ -326,12 +324,12 @@ end )
 --  gMedic Compatibility (https://www.gmodstore.com/market/view/ultimate-gmedic)
 if MedConfig then
 	hook.Add( "OnEntityCreated", "guthscp096:reset", function( ent )
-		if not ( ent:GetClass() == "sent_death_ragdoll" ) then return end
+		if ent:GetClass() ~= "sent_death_ragdoll" then return end
 
 		timer.Simple( 0, function()
 			local ply = ent:GetOwner()
 			if not IsValid( ply ) or not ply:IsPlayer() then return end
-			
+
 			guthscp096.remove_from_scp_096_targets( ply )
 		end )
 	end )
