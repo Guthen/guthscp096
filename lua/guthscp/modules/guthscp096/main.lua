@@ -174,6 +174,25 @@ MODULE.menu = {
 					decimals = 2
 				},
 			},
+			-- 	Special Animation
+			"Special Animation",
+			{
+				{
+					type = "Bool",
+					name = "Special Animation Enabled",
+					id = "specialanim",
+					desc = "If you want to have special animation during the trigger state",
+					default = false,
+				},
+				{
+					type = "Number",
+					name = "Taunt name",
+					id = "taunt_name",
+					desc = "The taunt NUMBER of your choice (like ACT_GMOD_GESTURE_TAUNT_ZOMBIE is 1641 for this model https://steamcommunity.com/sharedfiles/filedetails/?id=3359881322&searchtext=the+shy+guy)",
+					default = "1641",
+				},
+			},
+
 			--  detection
 			"Trigger Detection",
 			{
