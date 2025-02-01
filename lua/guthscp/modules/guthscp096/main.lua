@@ -1,7 +1,7 @@
 local MODULE = {
 	name = "SCP-096",
 	author = "Guthen",
-	version = "2.1.2",
+	version = "2.2.0",
 	description = [[Be SCP-096 and kill anyone who angered you while seeing your face, either by throwing doors or props at them or by dismembering them!]],
 	icon = "icon16/status_offline.png",
 	version_url = "https://raw.githubusercontent.com/Guthen/guthscp096/master/lua/guthscp/modules/guthscp096/main.lua",
@@ -21,7 +21,6 @@ MODULE.DETECTION_METHODS = {
 }
 
 MODULE.menu = {
-	--  config
 	config = {
 		form = {
 			"General",
@@ -174,7 +173,16 @@ MODULE.menu = {
 					decimals = 2
 				},
 			},
-			--  detection
+			"Animations",
+			{
+				{
+					type = "String",
+					name = "Enrage Animation",
+					id = "anim_enrage_name",
+					desc = "Animation name to play when SCP-096 is triggered. It will only work on playermodels that support it. The value must starts with 'ACT_'.",
+					default = "ACT_GMOD_GESTURE_TAUNT_ZOMBIE",
+				},
+			},
 			"Trigger Detection",
 			{
 				{
@@ -182,7 +190,7 @@ MODULE.menu = {
 					name = "Update Time",
 					id = "detection_update_time",
 					desc = "Set the Cooldown between each Trigger Detection Update, in seconds",
-					default = .1,
+					default = 0.1,
 					decimals = 2,
 				},
 				{
@@ -205,13 +213,12 @@ MODULE.menu = {
 					name = "Detection Angle",
 					id = "detection_angle",
 					desc = "Detection Method must be set to 'Serverside'! Cosine of the victim's field of view angle used to trigger SCP-096. Increasing this value will make the detection threshold smaller and vice-versa. By default, set to 0.55 which is equivalent to an angle of 56°.",
-					default = .55,
+					default = 0.55,
 					decimals = 4,
 					min = -1,
 					max = 1
 				},
 			},
-			--  attraction
 			"Attraction",
 			{
 				{
@@ -226,7 +233,7 @@ MODULE.menu = {
 					name = "Attraction Speed",
 					id = "attraction_speed",
 					desc = "Scale the speed of the attraction",
-					default = .5,
+					default = 0.5,
 					decimals = 2,
 				},
 				{
@@ -237,7 +244,6 @@ MODULE.menu = {
 					default = 8 * 40, -- 8 meters
 				},
 			},
-			--  sounds
 			"Sounds",
 			{
 				{
@@ -297,7 +303,6 @@ MODULE.menu = {
 			},
 		},
 	},
-	--  details
 	details = {
 		{
 			text = "CC-BY-SA",

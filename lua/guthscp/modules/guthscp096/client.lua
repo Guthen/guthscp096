@@ -29,7 +29,7 @@ hook.Add( "Think", "guthscp096:trigger", function()
 			attraction_eye_angles = nil
 
 			local scps_096 = guthscp096.get_scps_096()
-			local is_unreliable = config.detection_update_time < .1
+			local is_unreliable = config.detection_update_time < 0.1
 
 			--  trigger detection
 			local ply_head_id = ply:LookupBone( config.detection_head_bone )
@@ -61,8 +61,8 @@ hook.Add( "Think", "guthscp096:trigger", function()
 					filter = scp,
 					mask = MASK_VISIBLE_AND_NPCS, --  avoid traversable objects such as fences & windows
 				} )
-				--debugoverlay.Cross( scp_head_pos, 1, .1 )
-				--debugoverlay.Line( scp_head_pos, scp_head_pos + scp_to_ply * 5000, .1 )
+				--debugoverlay.Cross( scp_head_pos, 1, 0.1 )
+				--debugoverlay.Line( scp_head_pos, scp_head_pos + scp_to_ply * 5000, 0.1 )
 				if tr.Entity ~= ply then
 					--print( "hit something else")
 					continue
@@ -202,23 +202,23 @@ hook.Add( "HUDPaint", "zzz_guthscp096:post_process", function()
 		factor = math.min( 1.1, enrage_time / config.trigger_time )
 
 		scale = Lerp( FrameTime() * 3, scale, 1 )
-		end_scale = Lerp( FrameTime() * factor, end_scale, 1 ) * .25
+		end_scale = Lerp( FrameTime() * factor, end_scale, 1 ) * 0.25
 	--  idle
 	else
 		enrage_time = 0
-		factor = math.sin( CurTime() ) * .03 + .95
+		factor = math.sin( CurTime() ) * 0.03 + 0.95
 
-		scale = Lerp( FrameTime() * 2, scale, .2 )
+		scale = Lerp( FrameTime() * 2, scale, 0.2 )
 		end_scale = Lerp( FrameTime() * 3, end_scale, 0 )
 	end
 
 	--  draw
 	local tab = {
-		["$pp_colour_addr"] = .09 * factor * math.min( 1, math.random() + .5 ) * scale,
-		["$pp_colour_addg"] = .05 * end_scale,
-		["$pp_colour_addb"] = .02 * math.abs( math.sin( CurTime() / 5 ) ) + .1 * end_scale,
+		["$pp_colour_addr"] = 0.09 * factor * math.min( 1, math.random() + 0.5 ) * scale,
+		["$pp_colour_addg"] = 0.05 * end_scale,
+		["$pp_colour_addb"] = 0.02 * math.abs( math.sin( CurTime() / 5 ) ) + 0.1 * end_scale,
 		["$pp_colour_brightness"] = 1 * end_scale,
-		["$pp_colour_contrast"] = .5 * factor + scale,
+		["$pp_colour_contrast"] = 0.5 * factor + scale,
 		["$pp_colour_colour"] = 1,
 		["$pp_colour_mulr"] = 1 + 1 * end_scale,
 		["$pp_colour_mulg"] = 1 * end_scale,
@@ -226,7 +226,7 @@ hook.Add( "HUDPaint", "zzz_guthscp096:post_process", function()
 	}
 	DrawColorModify( tab )
 	DrawToyTown( 50, ScrH() * 2 * ( 1 - factor ) * scale )
-	DrawBloom( 5, .6, 9, 9, 1, 1, 1, 1, 2 )
+	DrawBloom( 5, 0.6, 9, 9, 1, 1, 1, 1, 2 )
 	DrawSharpen( 1, 1.2 * ( 1 - factor ) * scale )
-	DrawMotionBlur( .4, 1 * scale * factor, .02 )
+	DrawMotionBlur( 0.4, 1 * scale * factor, 0.02 )
 end )

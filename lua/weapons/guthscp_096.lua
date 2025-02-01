@@ -45,7 +45,7 @@ function SWEP:PrimaryAttack()
 
 	local ply = self:GetOwner()
 	if not guthscp096.is_scp_096_enraged( ply ) then
-		self:SetNextPrimaryFire( CurTime() + .1 )
+		self:SetNextPrimaryFire( CurTime() + 0.1 )
 		return
 	end
 
@@ -111,7 +111,7 @@ if SERVER then
 				end
 
 				--  periodically putting hands on his head (some animation)
-				if time < .5 or math.Round( time ) % 3 == 0 --[[ and self:GetNextPrimaryFire() <= CurTime() ]] then
+				if time < 0.5 or math.Round( time ) % 3 == 0 --[[ and self:GetNextPrimaryFire() <= CurTime() ]] then
 					self:SendWeaponAnim( ACT_VM_SECONDARYATTACK )
 				end
 			elseif shake_scale > 0 then

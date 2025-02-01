@@ -32,8 +32,14 @@ function guthscp096.enrage_scp_096( ply )
 	ply:SetNWBool( "guthscp096:is_enraged", true )
 	ply:SetNWInt( "guthscp096:enrage_time", CurTime() )
 	ply:Freeze( true )
+
 	if #config.sound_trigger > 0 then
 		guthscp.sound.play( ply, config.sound_trigger, config.sound_hear_distance )
+	end
+
+	--	trigger enrage animation
+	if config.anim_enrage_name:StartsWith( "ACT_" ) then
+		ply:DoAnimationEvent( _G[config.anim_enrage_name] )
 	end
 
 	local weap = ply:GetWeapon( "guthscp_096" )
@@ -78,7 +84,7 @@ function guthscp096.trigger_scp_096( target, ply )
 	if should == false then return end
 
 	guthscp.sound.play_client( target, config.sound_looked )
-	if CurTime() - ( triggered_scps[ply] and triggered_scps[ply].looked_sound_cooldown or 1 ) > .5 then
+	if CurTime() - ( triggered_scps[ply] and triggered_scps[ply].looked_sound_cooldown or 1 ) > 0.5 then
 		guthscp.sound.play_client( ply, config.sound_looked )
 		if triggered_scps[ply] then
 			triggered_scps[ply].looked_sound_cooldown = CurTime()
@@ -120,12 +126,12 @@ function guthscp096.unrage_scp_096( ply, no_sound )
 	--  select weapon
 	local weapon = ply:GetWeapon( "guthscp_096" )
 	if IsValid( weapon ) then
-		timer.Simple( .5, function()
+		timer.Simple( 0.5, function()
 			if not IsValid( weapon ) then return end
 			ply:SetActiveWeapon( weapon )
 
 			--  cover the head
-			timer.Simple( .1, function()
+			timer.Simple( 0.1, function()
 				if not IsValid( weapon ) then return end
 				weapon:SecondaryAttack()
 			end )
@@ -249,7 +255,7 @@ net.Receive( "guthscp096:trigger", function( len, ply )
 end )
 
 --  think
-timer.Create( "guthscp096:trigger", .1, 0, function()
+timer.Create( "guthscp096:trigger", 0.1, 0, function()
 	if guthscp096.filter:get_count() == 0 then return end
 	if config.detection_method ~= guthscp096.DETECTION_METHODS.SERVERSIDE then return end
 
@@ -286,22 +292,22 @@ timer.Create( "guthscp096:trigger", .1, 0, function()
 					mask = MASK_VISIBLE_AND_NPCS, --  avoid traversable objects such as fences & windows
 				} )
 
-				--debugoverlay.Text( tr.StartPos + Vector( 0, 0, 10 ), "in theoric view", .1 )
-				--debugoverlay.Line( tr.StartPos, tr.HitPos, .1, tr.Entity == ply and Color( 0, 255, 0 ) or Color( 255, 0, 0 ) )
+				--debugoverlay.Text( tr.StartPos + Vector( 0, 0, 10 ), "in theoric view", 0.1 )
+				--debugoverlay.Line( tr.StartPos, tr.HitPos, 0.1, tr.Entity == ply and Color( 0, 255, 0 ) or Color( 255, 0, 0 ) )
 				if tr.Entity == ply then
 					guthscp096.trigger_scp_096( ply, scp )
-					--debugoverlay.Text( tr.StartPos + Vector( 0, 0, 20 ), "trigger!", .1 )
+					--debugoverlay.Text( tr.StartPos + Vector( 0, 0, 20 ), "trigger!", 0.1 )
 				--else
-					--debugoverlay.Text( tr.StartPos + Vector( 0, 0, 20 ), "obstacle!", .1 )
+					--debugoverlay.Text( tr.StartPos + Vector( 0, 0, 20 ), "obstacle!", 0.1 )
 				end
 			--else
-				--debugoverlay.Text( scp_head_pos + Vector( 0, 0, 20 ), "no trigger", .1 )
-				--debugoverlay.Text( scp_head_pos + Vector( 0, 0, 10 ), "not in theoric view", .1 )
+				--debugoverlay.Text( scp_head_pos + Vector( 0, 0, 20 ), "no trigger", 0.1 )
+				--debugoverlay.Text( scp_head_pos + Vector( 0, 0, 10 ), "not in theoric view", 0.1 )
 			end
 
-			--debugoverlay.Text( scp_head_pos, "view dot: " .. tostring( math.Round( view_dot, 3 ) ) .. "> 0.55?", .1 )
-			--debugoverlay.Text( scp_head_pos - Vector( 0, 0, 10 ), "aim dot: " .. tostring( math.Round( aim_dot, 3 ) ) .. "< 0?", .1 )
-			--debugoverlay.Text( scp_head_pos - Vector( 0, 0, 20 ), "view angle: " .. tostring( math.Round( math.deg( math.acos( view_dot ) ) ), 3 ) .. "°", .1 )
+			--debugoverlay.Text( scp_head_pos, "view dot: " .. tostring( math.Round( view_dot, 3 ) ) .. "> 0.55?", 0.1 )
+			--debugoverlay.Text( scp_head_pos - Vector( 0, 0, 10 ), "aim dot: " .. tostring( math.Round( aim_dot, 3 ) ) .. "< 0?", 0.1 )
+			--debugoverlay.Text( scp_head_pos - Vector( 0, 0, 20 ), "view angle: " .. tostring( math.Round( math.deg( math.acos( view_dot ) ) ), 3 ) .. "°", 0.1 )
 		end
 	end
 end )
