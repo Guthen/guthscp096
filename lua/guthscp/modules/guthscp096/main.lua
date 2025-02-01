@@ -1,7 +1,7 @@
 local MODULE = {
 	name = "SCP-096",
 	author = "Guthen",
-	version = "2.1.2",
+	version = "2.2.0",
 	description = [[Be SCP-096 and kill anyone who angered you while seeing your face, either by throwing doors or props at them or by dismembering them!]],
 	icon = "icon16/status_offline.png",
 	version_url = "https://raw.githubusercontent.com/Guthen/guthscp096/master/lua/guthscp/modules/guthscp096/main.lua",
