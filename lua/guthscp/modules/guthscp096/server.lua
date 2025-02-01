@@ -37,10 +37,9 @@ function guthscp096.enrage_scp_096( ply )
 		guthscp.sound.play( ply, config.sound_trigger, config.sound_hear_distance )
 	end
 
-	if config.specialanim then
-		print("anim")
-		-- ply:DoAnimationEvent(ACT_GMOD_GESTURE_TAUNT_ZOMBIE)
-		ply:DoAnimationEvent(config.taunt_name)
+	--	trigger enrage animation
+	if config.anim_enrage_name:StartsWith( "ACT_" ) then
+		ply:DoAnimationEvent( _G[config.anim_enrage_name] )
 	end
 
 	local weap = ply:GetWeapon( "guthscp_096" )

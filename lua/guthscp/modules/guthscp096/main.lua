@@ -21,7 +21,6 @@ MODULE.DETECTION_METHODS = {
 }
 
 MODULE.menu = {
-	--  config
 	config = {
 		form = {
 			"General",
@@ -174,26 +173,16 @@ MODULE.menu = {
 					decimals = 2
 				},
 			},
-			-- 	Special Animation
-			"Special Animation",
+			"Animations",
 			{
 				{
-					type = "Bool",
-					name = "Special Animation Enabled",
-					id = "specialanim",
-					desc = "If you want to have special animation during the trigger state",
-					default = false,
-				},
-				{
-					type = "Number",
-					name = "Taunt name",
-					id = "taunt_name",
-					desc = "The taunt NUMBER of your choice (like ACT_GMOD_GESTURE_TAUNT_ZOMBIE is 1641 for this model https://steamcommunity.com/sharedfiles/filedetails/?id=3359881322&searchtext=the+shy+guy)",
-					default = "1641",
+					type = "String",
+					name = "Enrage Animation",
+					id = "anim_enrage_name",
+					desc = "Animation name to play when SCP-096 is triggered. It will only work on playermodels that support it. The value must starts with 'ACT_'.",
+					default = "ACT_GMOD_GESTURE_TAUNT_ZOMBIE",
 				},
 			},
-
-			--  detection
 			"Trigger Detection",
 			{
 				{
@@ -230,7 +219,6 @@ MODULE.menu = {
 					max = 1
 				},
 			},
-			--  attraction
 			"Attraction",
 			{
 				{
@@ -256,7 +244,6 @@ MODULE.menu = {
 					default = 8 * 40, -- 8 meters
 				},
 			},
-			--  sounds
 			"Sounds",
 			{
 				{
@@ -316,7 +303,6 @@ MODULE.menu = {
 			},
 		},
 	},
-	--  details
 	details = {
 		{
 			text = "CC-BY-SA",
