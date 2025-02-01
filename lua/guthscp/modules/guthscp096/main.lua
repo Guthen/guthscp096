@@ -190,7 +190,7 @@ MODULE.menu = {
 					name = "Update Time",
 					id = "detection_update_time",
 					desc = "Set the Cooldown between each Trigger Detection Update, in seconds",
-					default = .1,
+					default = 0.1,
 					decimals = 2,
 				},
 				{
@@ -213,7 +213,7 @@ MODULE.menu = {
 					name = "Detection Angle",
 					id = "detection_angle",
 					desc = "Detection Method must be set to 'Serverside'! Cosine of the victim's field of view angle used to trigger SCP-096. Increasing this value will make the detection threshold smaller and vice-versa. By default, set to 0.55 which is equivalent to an angle of 56°.",
-					default = .55,
+					default = 0.55,
 					decimals = 4,
 					min = -1,
 					max = 1
@@ -233,7 +233,7 @@ MODULE.menu = {
 					name = "Attraction Speed",
 					id = "attraction_speed",
 					desc = "Scale the speed of the attraction",
-					default = .5,
+					default = 0.5,
 					decimals = 2,
 				},
 				{
