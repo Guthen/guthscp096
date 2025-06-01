@@ -136,6 +136,13 @@ MODULE.menu = {
 					default = "normal",
 				},
 				{
+					type = "String",
+					name = "View Model",
+					id = "view_model",
+					desc = "Set the weapon's view model.",
+					default = "models/weapons/v_arms_scp096.mdl",
+				},
+				{
 					type = "Number",
 					name = "Distance Unit",
 					id = "distance_unit",

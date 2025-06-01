@@ -77,6 +77,7 @@ end
 
 function SWEP:Initialize()
 	self:SetHoldType( guthscp.configs.guthscp096.hold_type )
+	self.ViewModel = guthscp.configs.guthscp096.view_model
 end
 
 if SERVER then
